@@ -27,7 +27,6 @@ public class TutorServiceImplement implements TutorService {
     @Autowired
     TutorRepository tutorRepository;
 
-
     @Autowired
     SubjectRepository subjectRepository;
     @Autowired
@@ -88,34 +87,11 @@ public class TutorServiceImplement implements TutorService {
 
 
     @Override
-    public TutorRequest addTutor(MultipartFile file, TutorRequest request) {
+    public TutorRequest addTutor(MultipartFile file, String cityTeach, String fullName, String gender, String dateOfBirth, String address, String phoneNumber, String email, String voice, String major, String academicLevel, String description, String issued, String shoolTeacherOrStudent, int numberTeachOfWeek, double salaryRequest) {
         try {
-            boolean isSuccess = fileSevice.saveFile(file);
+            boolean isSuccess = fileSevice.uploadFile(file);
 
             if (isSuccess) {
-                Tutor tutor = new Tutor();
-                String cityTeach = request.getCityTech();
-                String fullName = request.getFullName();
-                String gender = request.getGender();
-                String dateOfBirth = request.getDateOfBirth();
-                String address = request.getAddress();
-                String phoneNumber = request.getPhoneNumber();
-                String email = request.getEmail();
-                String voice = request.getVoice();
-                String major = request.getMajor();
-                String ecademicLevel = request.getEcademicLevel();
-                String description = request.getDescription();
-                String citizenIdentificationCard = file.getOriginalFilename();
-                String issued = request.getIssued();
-                String citizenIdentificationCardFront = file.getOriginalFilename();
-                String citizenIdentificationCardFrontBackside = file.getOriginalFilename();
-                String cardPhoto = file.getOriginalFilename();
-                String schoolOfTeach = request.getSchoolTeachOrStudent();
-                int numberTeachOfWeek = request.getNumberTeachOfWeak();
-                double salaryRequest = request.getSalaryRequest();
-                LocalDateTime createAt = request.getCreateAt();
-                List<Subject> listSubject = request.getListSubjects();
-
                 Tutor newTutor = new Tutor();
                 newTutor.setCityTech(cityTeach);
                 newTutor.setFullName(fullName);
@@ -126,32 +102,35 @@ public class TutorServiceImplement implements TutorService {
                 newTutor.setEmail(email);
                 newTutor.setVoice(voice);
                 newTutor.setMajor(major);
-                newTutor.setEcademicLevel(ecademicLevel);
+                newTutor.setEcademicLevel(academicLevel);
                 newTutor.setDescription(description);
-                newTutor.setCitizenIdentificationCard(citizenIdentificationCard);
+                newTutor.setCitizenIdentificationCard(file.getOriginalFilename());
                 newTutor.setIssued(issued);
-                newTutor.setCitizenIdentificationCardFront(citizenIdentificationCardFront);
-                newTutor.setCitizenIdentificationCardFrontBackside(citizenIdentificationCardFrontBackside);
-                newTutor.setCardPhoto(cardPhoto);
-                newTutor.setSchoolTeachOrStudent(schoolOfTeach);
+                newTutor.setCitizenIdentificationCardFront(file.getOriginalFilename());
+                newTutor.setCitizenIdentificationCardFrontBackside(file.getOriginalFilename());
+                newTutor.setCardPhoto(file.getOriginalFilename());
+                newTutor.setSchoolTeachOrStudent(shoolTeacherOrStudent);
+                newTutor.setNumberTeachOfWeek(numberTeachOfWeek);
                 newTutor.setSalaryRequest(salaryRequest);
 
-                Tutor saveTutor = tutorRepository.save(newTutor);
+                tutorRepository.save(newTutor);
 
-                List<TutorSubject> listTutorSubject = new ArrayList<>();
-                for (Subject subject : listSubject) {
-                    Subject existingSubject = subjectRepository.findById(subject.getId()).get();
-                    TutorSubject tutorSubject = new TutorSubject();
-                    tutorSubject.setTutor(saveTutor);
-                    tutorSubject.setSubject(existingSubject);
-                    listTutorSubject.add(tutorSubject);
-                }
-                tutorSubjectRepository.saveAll(listTutorSubject);
+//                List<TutorSubject> listTutorSubject = newTutor.getListTutorSubject();
+//                for (Subject subject : listSubject) {
+//                    Subject existingSubject = subjectRepository.findById(subject.getId()).get();
+//                    TutorSubject tutorSubject = new TutorSubject();
+//                    tutorSubject.setTutor(saveTutor);
+//                    tutorSubject.setSubject(existingSubject);
+//                    listTutorSubject.add(tutorSubject);
+//                }
+//                tutorSubjectRepository.saveAll(listTutorSubject);
+
             }
         } catch (Exception e) {
             throw new RuntimeException("Cannot add tutor !");
         }
         return null;
+
     }
 
     @Override

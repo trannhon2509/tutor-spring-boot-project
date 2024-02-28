@@ -21,4 +21,7 @@ public interface UserService extends UserDetailsService {
 
     public boolean activeAccount (String email , String activeCode);
 
+    public boolean forgotPassword (String email);
+    public boolean resetPassword (String email , UserRequest request);
+
 }

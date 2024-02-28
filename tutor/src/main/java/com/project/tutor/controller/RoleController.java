@@ -44,26 +44,18 @@ public class RoleController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteRoleById (@PathVariable int id){
         boolean checkDelete = roleService.deleteRole(id);
-        if(checkDelete){
-            data.setData(true);
-            data.setMsg("Delete success");
-        }else{
-            data.setData(false);
-            data.setMsg("Delete fail!");
-        }
+
+        data.setData(checkDelete ? true : false);
+        data.setMsg(checkDelete ? "Delete success" : "Delete fail!");
         return new ResponseEntity<>(data,HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateRoleById (@PathVariable int id , @RequestBody RoleRequest request){
         boolean checkUpdate = roleService.updateRole(id,request);
-        if(checkUpdate){
-            data.setData(true);
-            data.setMsg("Update success");
-        }else{
-            data.setData(false);
-            data.setMsg("Update fail!");
-        }
+
+        data.setData(checkUpdate ? true : false);
+        data.setMsg(checkUpdate ? "Update role success" : "Update role fail!");
         return new ResponseEntity<>(data,HttpStatus.OK);
     }
 }

@@ -30,13 +30,8 @@ public class UserController {
     @DeleteMapping("/delete/user/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable int id) {
         boolean checkDelete = userService.deleteUserById(id);
-        if (checkDelete) {
-            data.setMsg("Delete Success");
-            data.setData(true);
-        } else {
-            data.setMsg("Delete Fail");
-            data.setData(false);
-        }
+        data.setData(checkDelete ? true : false);
+        data.setMsg(checkDelete ? "Delete user success" : "Delete user fail!");
 
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
@@ -44,14 +39,9 @@ public class UserController {
     @PutMapping("update/user/{id}")
     public ResponseEntity <?> updateUser (@PathVariable int id , @RequestBody UserRequest request){
            boolean checkUpdateUser = userService.updateUser(id , request);
-        if (checkUpdateUser) {
-            data.setMsg("Update Success");
-            data.setData(true);
-        } else {
-            data.setMsg("Update Fail");
-            data.setData(false);
-        }
 
+        data.setData(checkUpdateUser ? true : false);
+        data.setMsg(checkUpdateUser ? "Update user success" : "Update user fail!");
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
 
@@ -62,9 +52,8 @@ public class UserController {
             data.setData(true);
             data.setMsg("Success");
         } else {
-            data.setMsg("Fail");
+            data.setMsg("Fail!");
         }
-
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
 }

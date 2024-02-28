@@ -13,7 +13,6 @@ import com.project.tutor.respone.ResponeData;
 import com.project.tutor.secutiry.JwtProvider;
 import com.project.tutor.service.EmailService;
 import com.project.tutor.service.UserService;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -29,22 +28,26 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
-public class UserImplementService implements UserService  {
+public class UserImplementService implements UserService {
     public final static ResponeData data = new ResponeData();
-     private  UserRepository userRepository;
+    private UserRepository userRepository;
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
     private JwtProvider jwtProvider;
     private UserRoleRepository userRoleRepository;
     private EmailService emailService;
+
     @Autowired
-    public UserImplementService (UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder,
-                                 @Lazy JwtProvider jwtProvider, UserRoleRepository userRoleRepository, EmailService emailService ){
+    public UserImplementService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder,
+                                @Lazy JwtProvider jwtProvider, UserRoleRepository userRoleRepository, EmailService emailService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -111,16 +114,22 @@ public class UserImplementService implements UserService  {
                 }
                 // Save list userRoles
                 userRoleRepository.saveAll(userRoles);
+            } else {
+                Role roleDefault = roleRepository.findById(3).get();
+                UserRole userRole = new UserRole();
+                userRole.setUser(savedUser);
+                userRole.setRole(roleDefault);
+                userRoleRepository.save(userRole);
             }
 
             //Send email actice account
 //            emailService.sendEmailActive(newUser.getEmail(), newUser.getActiveCode());
 
             // Tạo và gán authentication token
-            Authentication authentication = new UsernamePasswordAuthenticationToken(savedUser.getUsername(), savedUser.getPassword());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            String token = jwtProvider.generateToken(username);
-            data.setJwt(token);
+//            Authentication authentication = new UsernamePasswordAuthenticationToken(savedUser.getUsername(), savedUser.getPassword());
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
+//            String token = jwtProvider.generateToken(username);
+//            data.setJwt(token);
             data.setMsg("Signup success");
             return data;
         } catch (Exception e) {
@@ -130,6 +139,41 @@ public class UserImplementService implements UserService  {
         }
     }
 
+    @Override
+    public boolean forgotPassword(String email) {
+        try {
+            User checkEmailUser = userRepository.findByEmail(email);
+            if (checkEmailUser == null) {
+                throw new RuntimeException("Cannot found email : " + email);
+            }
+            emailService.sendEmailResetPassword(email);
+            return true;
+        } catch (Exception e) {
+                throw new RuntimeException("Send mail forgot password fail!" + e.getMessage());
+        }
+    }
+
+    @Override
+    public boolean resetPassword(String email , UserRequest request) {
+        try {
+            User checkEmailUser = userRepository.findByEmail(email);
+            if (checkEmailUser == null) {
+                throw new RuntimeException("Cannot found email : " + email);
+            }
+
+            if(!request.getPasswordRepeat().equals(request.getPasswordRepeatNew())){
+                throw new RuntimeException("New password and password repeat not macth!");
+            }
+
+            checkEmailUser.setPassword(passwordEncoder.encode(request.getPasswordRepeatNew()));
+
+            userRepository.save(checkEmailUser);
+            return true;
+
+        } catch (Exception e) {
+            throw new RuntimeException("Send mail reset password fail!" + e.getMessage());
+        }
+    }
 
     public Authentication authentication(String username, String password) {
         UserDetails userDetails = loadUserByUsername(username);
@@ -149,7 +193,12 @@ public class UserImplementService implements UserService  {
         try {
             String username = request.getUsername();
             String password = request.getPassword();
+
+            Authentication authentication = authentication(username, password);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
             String token = jwtProvider.generateToken(username);
+
             data.setJwt(token);
             data.setMsg("Signin success");
             return data;
@@ -206,10 +255,10 @@ public class UserImplementService implements UserService  {
             if (request.getListUserRoles() != null) {
                 for (Role role : request.getListUserRoles()) {
                     Role existingRole = roleRepository.findById(role.getId()).get();
-                        UserRole userRole = new UserRole();
-                        userRole.setUser(user);
-                        userRole.setRole(existingRole);
-                        list.add(userRole);
+                    UserRole userRole = new UserRole();
+                    userRole.setUser(user);
+                    userRole.setRole(existingRole);
+                    list.add(userRole);
                 }
                 userRoleRepository.saveAll(list);
             }
@@ -259,12 +308,12 @@ public class UserImplementService implements UserService  {
 
     @Override
     public User findUserProfileByJwt(String jwt) {
-//        String username = jwtProvider.getUsernameFromToken(jwt);
-//        User user = userRepository.findByUsername(username);
-//        if (user == null) {
-//            throw new RuntimeException("Cannot found profile by jwt!");
-//        }
-       return null;
+        String username = jwtProvider.extractUsername(jwt);
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new RuntimeException("Cannot found profile by jwt!");
+        }
+        return null;
     }
 
     @Override
@@ -343,38 +392,22 @@ public class UserImplementService implements UserService  {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        //        User user = userRepository.findByUsername(username);
-//        if(user == null){
-//            throw  new BadCredentialsException("Cannot found username : " + username);
-//        }
-//
-//        // CHECK ACCOUNT ACTIVATED OR NOT
-//        if(!user.isActive()){
-//            throw  new BadCredentialsException("Account don't acive : ");
-//        }
-//        List<GrantedAuthority> auth = new ArrayList<>();
-//
-//        return new org.springframework.security.core.userdetails.User(user.getUsername(),user.getPassword(),auth);
-
         UserRole user = userRoleRepository.findByUserUsername(username);
-        if(user == null){
-            throw  new BadCredentialsException("Cannot found username : " + username);
+        if (user == null) {
+            throw new BadCredentialsException("Cannot found username : " + username);
         }
 
         // CHECK ACCOUNT ACTIVATED OR NOT
-        if(!user.getUser().isActive()){
-            throw  new BadCredentialsException("Account don't acive : ");
+        if (!user.getUser().isActive()) {
+            throw new BadCredentialsException("Account don't acive : ");
         }
 
-        Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-        grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().getRoleName()));
-        System.out.println("User : " + user);
-        System.out.println("Role "  + grantedAuthorities);
-
-        return new org.springframework.security.core.userdetails.User(user.getUser().getUsername(),user.getUser().getPassword(),roleAuthorization(user.getRole().getListUserRoles()));
+//        Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
+//        grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().getRoleName()));
+        return new org.springframework.security.core.userdetails.User(user.getUser().getUsername(), user.getUser().getPassword(), roleAuthorization(user.getRole().getListUserRoles()));
     }
 
-    public Collection<? extends GrantedAuthority> roleAuthorization (Collection <UserRole> roles){
+    public Collection<? extends GrantedAuthority> roleAuthorization(Collection<UserRole> roles) {
         return roles.stream().map(
                 role -> new SimpleGrantedAuthority(role.getRole().getRoleName())
         ).collect(Collectors.toList());

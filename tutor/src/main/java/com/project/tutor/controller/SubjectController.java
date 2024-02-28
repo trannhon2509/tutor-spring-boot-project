@@ -30,13 +30,9 @@ public class SubjectController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteSubjectById (@PathVariable int id){
         boolean checkDelete = subjectService.deleteSubject(id);
-        if(checkDelete) {
-            data.setData(true);
-            data.setMsg("Delete subject successfully");
-        }else{
-            data.setData(false);
-            data.setMsg("Delete subject not successfully");
-        }
+
+        data.setData(checkDelete ? true : false);
+        data.setMsg(checkDelete ? "Delete subject successfully" : "Delete subject not successfully");
         return new ResponseEntity<>(data,HttpStatus.OK);
     }
     @PostMapping("/add")
@@ -55,13 +51,9 @@ public class SubjectController {
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateSubject (@PathVariable int id , @RequestBody SubjectRequest request){
         boolean checkUpdateSuccess = subjectService.updateSubject(id , request);
-        if(checkUpdateSuccess){
-            data.setData(true);
-            data.setMsg("Update successfully");
-        }else{
-            data.setData(false);
-            data.setMsg("Update fail");
-        }
+
+        data.setData(checkUpdateSuccess ? true : false);
+        data.setMsg(checkUpdateSuccess ? "Update subject successfully" : "Update subject fail!");
         return new ResponseEntity<>(data,HttpStatus.OK);
     }
 }

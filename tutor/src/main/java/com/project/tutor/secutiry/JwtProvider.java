@@ -51,7 +51,7 @@ public String createToken(Map<String, Objects> claims, String username) {
             .setClaims(claims)
             .setSubject(username)
             .setIssuedAt(new Date(System.currentTimeMillis()))
-            .setExpiration(new Date(System.currentTimeMillis() + 30 * 60 * 1000))
+            .setExpiration(new Date(System.currentTimeMillis() + 864000000))
             .signWith(SignatureAlgorithm.HS256, getSignKey())
             .compact();
 }
@@ -65,7 +65,6 @@ public String createToken(Map<String, Objects> claims, String username) {
     }
     public <T> T extractClaims(String token, Function<Claims, T> claimsTFunction) {
         final Claims claims = extractAllClaims(token);
-        System.out.println("claims : " + claims);
         return claimsTFunction.apply(claims);
     }
 

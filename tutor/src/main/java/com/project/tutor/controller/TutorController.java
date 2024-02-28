@@ -17,33 +17,42 @@ public class TutorController {
     @Autowired
     TutorService tutorService;
 
+    @GetMapping
+    public ResponseEntity<?> getAllTutor() {
+        return new ResponseEntity<>(tutorService.getAllTutor(), HttpStatus.OK);
+    }
 
-   @GetMapping
-    public ResponseEntity<?> getAllTutor (){
-       return new ResponseEntity<>(tutorService.getAllTutor(), HttpStatus.OK);
-   }
-   @GetMapping("/{id}")
-    public ResponseEntity<?> getTutorById (@PathVariable int id){
-       TutorManyDTO tutorManyDTO = tutorService.getTutorById(id);
-       return new ResponseEntity<>(tutorManyDTO,HttpStatus.OK);
-   }
-   @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteTutorById (@PathVariable int id){
-       boolean checkDeleteTutor = tutorService.deleteTutorById(id);
-       if(checkDeleteTutor){
-           data.setData(true);
-           data.setMsg("Delete tutor success");
-       }else{
-           data.setData(false);
-           data.setMsg("Delete tutor fail");
-       }
-       return new ResponseEntity<>(data,HttpStatus.OK);
-   }
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getTutorById(@PathVariable int id) {
+        TutorManyDTO tutorManyDTO = tutorService.getTutorById(id);
+        return new ResponseEntity<>(tutorManyDTO, HttpStatus.OK);
+    }
 
-   @PostMapping("/add")
-    public ResponseEntity <?> addTutor (@RequestParam MultipartFile file, @RequestParam TutorRequest request){
-       TutorRequest tutorRequest = tutorService.addTutor(file,request);
-        return new ResponseEntity<>(tutorRequest , HttpStatus.OK);
-   }
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteTutorById(@PathVariable int id) {
+        boolean checkDeleteTutor = tutorService.deleteTutorById(id);
+
+        data.setData(checkDeleteTutor ? true : false);
+        data.setMsg(checkDeleteTutor ? "Delete tutor success" : "Delete tutor fail");
+
+        return new ResponseEntity<>(data, HttpStatus.OK);
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<?> addTutor(@RequestParam MultipartFile file,
+                                      @RequestParam String cityTeach, @RequestParam String fullName,
+                                      @RequestParam String gender, @RequestParam String dateOfBirth,
+                                      @RequestParam String address, @RequestParam String phoneNumber,
+                                      @RequestParam String email, @RequestParam String voice,
+                                      @RequestParam String major, @RequestParam String academicLevel,
+                                      @RequestParam String description,
+                                      @RequestParam String issued,
+                                      @RequestParam String shoolTeacherOrTeacher, @RequestParam int numberTeachOfWeek,
+                                      @RequestParam double salaryRequest) {
+        TutorRequest tutorRequest = tutorService.addTutor(file, cityTeach, fullName, gender, dateOfBirth, address, phoneNumber, email, voice, major,
+                academicLevel, description, issued, shoolTeacherOrTeacher, numberTeachOfWeek, salaryRequest);
+
+        return new ResponseEntity<>(tutorRequest, HttpStatus.OK);
+    }
 
 }
