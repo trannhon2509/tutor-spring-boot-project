@@ -38,26 +38,7 @@ public class FileServiceImplement implements FileService {
         }
     }
 
-    @Override
-    public boolean uploadMutiparFile(List<MultipartFile> files) {
-//        try {
-//            init();
-//            boolean checkUploadFiles = files.stream().allMatch(file -> {
-//                String originalFileName = file.getOriginalFilename();
-//                Path filePath = root.resolve(originalFileName);
-//                try {
-//                    Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-//                } catch (Exception e) {
-//                    throw new RuntimeException("Fail stream upload files : " +  checkUploadFiles , e.getMessage());
-//                }
-//                return true;
-//            });
-//            return checkUploadFiles;
-//        } catch (Exception e) {
-//            throw new RuntimeException("Upload mutipar file fail!");
-//        }
-        return false;
-    }
+
 
     @Override
     public boolean uploadFile(MultipartFile file) {
@@ -67,6 +48,23 @@ public class FileServiceImplement implements FileService {
             return true;
         } catch (IOException e) {
             throw new RuntimeException("Can't save file!");
+        }
+    }
+
+    @Override
+    public boolean uploadMultiFile(MultipartFile[] files) {
+        try {
+            init();
+            for (MultipartFile file : files) {
+                if (file.isEmpty()) {
+                    continue;
+                }
+                Files.copy(file.getInputStream(), this.root.resolve(file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
+            }
+
+            return true;
+        } catch (IOException e) {
+            throw new RuntimeException("Can't save files!");
         }
     }
 

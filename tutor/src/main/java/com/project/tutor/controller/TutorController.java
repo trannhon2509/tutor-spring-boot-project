@@ -1,14 +1,24 @@
 package com.project.tutor.controller;
 
 import com.project.tutor.many.dto.TutorManyDTO;
+import com.project.tutor.model.Subject;
 import com.project.tutor.request.TutorRequest;
 import com.project.tutor.respone.ResponeData;
+import com.project.tutor.service.FileService;
 import com.project.tutor.service.TutorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/tutor")
@@ -16,6 +26,9 @@ public class TutorController {
     public static ResponeData data = new ResponeData();
     @Autowired
     TutorService tutorService;
+
+    @Autowired
+    FileService fileService;
 
     @GetMapping
     public ResponseEntity<?> getAllTutor() {
@@ -39,20 +52,26 @@ public class TutorController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addTutor(@RequestParam MultipartFile file,
-                                      @RequestParam String cityTeach, @RequestParam String fullName,
-                                      @RequestParam String gender, @RequestParam String dateOfBirth,
-                                      @RequestParam String address, @RequestParam String phoneNumber,
-                                      @RequestParam String email, @RequestParam String voice,
-                                      @RequestParam String major, @RequestParam String academicLevel,
-                                      @RequestParam String description,
-                                      @RequestParam String issued,
-                                      @RequestParam String shoolTeacherOrTeacher, @RequestParam int numberTeachOfWeek,
-                                      @RequestParam double salaryRequest) {
-        TutorRequest tutorRequest = tutorService.addTutor(file, cityTeach, fullName, gender, dateOfBirth, address, phoneNumber, email, voice, major,
-                academicLevel, description, issued, shoolTeacherOrTeacher, numberTeachOfWeek, salaryRequest);
+    public ResponseEntity<?> addTutor(@RequestPart MultipartFile[] files, @RequestPart TutorRequest request) {
 
-        return new ResponseEntity<>(tutorRequest, HttpStatus.OK);
+        TutorRequest addTutor = tutorService.addTutor(files, request);
+        if (addTutor == null) {
+            data.setData(true);
+            data.setMsg("Add Tutor success");
+        } else {
+            data.setData(false);
+            data.setMsg("Add Tutor fail!");
+        }
+        return new ResponseEntity<>(data, HttpStatus.OK);
     }
 
+
+    @PostMapping("/update/{id}")
+    public ResponseEntity<?> updateTutor(@RequestPart MultipartFile[] files, @PathVariable int id, @RequestPart TutorRequest request) {
+        boolean checkUpdate = tutorService.updateTutor(files, id, request);
+        data.setData(checkUpdate ? true : false);
+        data.setMsg(checkUpdate ? "Update tutor success" : "Update tutor fail!");
+
+        return new ResponseEntity<>(data, HttpStatus.OK);
+    }
 }

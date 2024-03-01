@@ -1,7 +1,6 @@
 package com.project.tutor.model;
 
-import com.project.tutor.mapper.FeedBack;
-import com.project.tutor.mapper.TutorSubject;
+import com.project.tutor.mapper.TutorSubjectUser;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +23,7 @@ public class Tutor {
     private int id;
 
     @Column(name = "city_teach")
-    private String cityTech;
+    private String cityTeach;
 
     @Column(name = "full_name")
     private String fullName;
@@ -84,14 +83,15 @@ public class Tutor {
     private LocalDateTime createAt;
 
     @OneToMany(mappedBy = "tutor" ,fetch = FetchType.LAZY , cascade =  CascadeType.ALL)
-    private List<TutorSubject> listTutorSubject = new ArrayList<>();
+    private List<TutorSubjectUser> listTutorSubjectUser = new ArrayList<>();
 
     @OneToMany(mappedBy = "tutor",cascade = CascadeType.ALL)
-    private Set<Teaching> listTeaching = new HashSet<>();
+    private List<Teaching> listTeachings = new ArrayList<>();
 
     @OneToMany(mappedBy = "tutor" , cascade = CascadeType.ALL)
-    private Set<Payment> listPayment = new HashSet<>();
+    private List<Payment> listPayment = new ArrayList<>();
 
     @OneToMany(mappedBy = "tutor" , cascade = CascadeType.ALL)
-    private List<FeedBack> listFeedback = new ArrayList<>();
+    private List<FeedBack> listFeedbacks = new ArrayList<>();
+
 }

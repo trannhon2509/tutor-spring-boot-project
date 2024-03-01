@@ -35,6 +35,5 @@ public class TutorDTO {
     private int numberTeachOfWeak;
     private double  salaryRequest;
     private LocalDateTime createAt;
-//    private List<SubjectDTO> listSubjectDTO;
 }
 

@@ -1,6 +1,7 @@
 package com.project.tutor.implementservice;
 
 import com.project.tutor.dto.RoleDTO;
+import com.project.tutor.many.dto.LearningManyDTO;
 import com.project.tutor.many.dto.UserManyDTO;
 import com.project.tutor.mapper.UserRole;
 import com.project.tutor.model.Role;
@@ -45,9 +46,11 @@ public class UserImplementService implements UserService {
     private UserRoleRepository userRoleRepository;
     private EmailService emailService;
 
+
     @Autowired
     public UserImplementService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder,
-                                @Lazy JwtProvider jwtProvider, UserRoleRepository userRoleRepository, EmailService emailService) {
+                                @Lazy JwtProvider jwtProvider, UserRoleRepository userRoleRepository, EmailService emailService
+                              ) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -173,6 +176,18 @@ public class UserImplementService implements UserService {
         } catch (Exception e) {
             throw new RuntimeException("Send mail reset password fail!" + e.getMessage());
         }
+    }
+
+    @Override
+    public List<LearningManyDTO> getAllListLearning() {
+        List<User> listUser = userRepository.findAll();
+        List<LearningManyDTO> listLearningMany = new ArrayList<>();
+
+        for (User user : listUser){
+            LearningManyDTO learningMany = new LearningManyDTO();
+
+        }
+        return  null;
     }
 
     public Authentication authentication(String username, String password) {

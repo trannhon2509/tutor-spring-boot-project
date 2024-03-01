@@ -21,27 +21,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class JwtProvider {
-    // SecretKey key = Keys.hmacShaKeyFor(JwtConstant.SERECT_KEY.getBytes());
     private final static String SERECT = "sjbdfkghsdgfjkhsdfgsdfgsdfgsdfgsdfgsdfgskdfhgasdfasdfasdf";
-//    public String generateToken(Authentication auth) {
-//        String jwt = Jwts.builder()
-//                .setIssuedAt(new Date())
-//                .setExpiration(new Date(new Date().getTime() + 846000000))
-//                .claim("username", auth.getName())
-//                .claim("authorities", auth.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
-//                .signWith(key).compact();
-//        return jwt;
-//    }
-//
-//    public String getUsernameFromToken(String token) {
-//        if (token != null && token.startsWith("Bearer ")) {
-//            token = token.substring(7);
-//            Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
-//            String username = String.valueOf(claims.get("username"));
-//            return username;
-//        }
-//        return null;
-//    }
 public String generateToken(String username) {
     Map<String, Objects> claims = new HashMap<>();
     return createToken(claims, username);
@@ -51,7 +31,7 @@ public String createToken(Map<String, Objects> claims, String username) {
             .setClaims(claims)
             .setSubject(username)
             .setIssuedAt(new Date(System.currentTimeMillis()))
-            .setExpiration(new Date(System.currentTimeMillis() + 864000000))
+            .setExpiration(new Date(System.currentTimeMillis() + 10 * 24 * 60 * 60 * 10000))
             .signWith(SignatureAlgorithm.HS256, getSignKey())
             .compact();
 }

@@ -1,4 +1,4 @@
-package com.project.tutor.mapper;
+package com.project.tutor.model;
 
 import com.project.tutor.model.Tutor;
 import com.project.tutor.model.User;

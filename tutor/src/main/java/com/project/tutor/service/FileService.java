@@ -11,8 +11,9 @@ import java.util.List;
 public interface FileService {
     public void init();
     public boolean uploadFile (MultipartFile file);
+
+    public boolean uploadMultiFile (MultipartFile [] files);
     public Resource downloadFile (String fileName);
     public boolean deleteFile (String fileName);
 
-    public boolean uploadMutiparFile(List<MultipartFile> files);
 }

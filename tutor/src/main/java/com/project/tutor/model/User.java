@@ -1,7 +1,6 @@
 package com.project.tutor.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.project.tutor.mapper.FeedBack;
+import com.project.tutor.mapper.TutorSubjectUser;
 import com.project.tutor.mapper.UserRole;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -11,9 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -65,7 +62,11 @@ public class User {
     @OneToMany(mappedBy = "user" , fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<UserRole> listUserRoles = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<FeedBack> listFeedback = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user" , fetch = FetchType.LAZY, cascade =  CascadeType.ALL)
+    private List<FeedBack> listFeedbacks = new ArrayList<>();
+
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade =  CascadeType.ALL)
+    private List<TutorSubjectUser> listTutorSubjectUser = new ArrayList<>();
 }

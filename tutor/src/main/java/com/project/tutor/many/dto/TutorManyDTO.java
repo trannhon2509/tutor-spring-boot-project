@@ -1,6 +1,7 @@
 package com.project.tutor.many.dto;
 
 import com.project.tutor.dto.SubjectDTO;
+import com.project.tutor.dto.TeachingDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,4 +37,5 @@ public class TutorManyDTO {
     private double  salaryRequest;
     private LocalDateTime createAt;
     private List<SubjectDTO> listSubjectDTO;
+    private List<TeachingDTO> listTeachingDTO;
 }

@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TutorRequest {
-    private String cityTech;
+    private String cityTeach;
     private String fullName;
     private String gender;
     private String dateOfBirth;
@@ -31,7 +31,7 @@ public class TutorRequest {
     private String citizenIdentificationCardFrontBackside;
     private String cardPhoto;
     private String schoolTeachOrStudent;
-    private int numberTeachOfWeak;
+    private int numberTeachOfWeek;
     private double  salaryRequest;
     private LocalDateTime createAt;
     private List<Subject> listSubjects;

@@ -1,5 +1,6 @@
 package com.project.tutor.service;
 
+import com.project.tutor.many.dto.LearningManyDTO;
 import com.project.tutor.many.dto.UserManyDTO;
 import com.project.tutor.model.User;
 import com.project.tutor.request.UserRequest;
@@ -24,4 +25,5 @@ public interface UserService extends UserDetailsService {
     public boolean forgotPassword (String email);
     public boolean resetPassword (String email , UserRequest request);
 
+    public List<LearningManyDTO> getAllListLearning ();
 }

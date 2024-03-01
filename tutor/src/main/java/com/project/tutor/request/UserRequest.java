@@ -1,6 +1,6 @@
 package com.project.tutor.request;
 
-import com.project.tutor.mapper.FeedBack;
+import com.project.tutor.model.FeedBack;
 import com.project.tutor.model.Role;
 import lombok.*;
 

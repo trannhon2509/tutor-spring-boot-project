@@ -42,71 +42,7 @@ public class JwtValidator extends OncePerRequestFilter {
     }
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-//        String jwt = ((HttpServletRequest) request).getHeader(JwtConstant.JWT_HEADER);
-//        if (jwt != null) {
-//            jwt = jwt.substring(7);
-//            try {
-//                // AUTHORIZATION JWT
-//                SecretKey key = Keys.hmacShaKeyFor(JwtConstant.SERECT_KEY.getBytes());
-//                // DECRYPTION JWT
-//                Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt).getBody();
-//                // GET VALUE OF USERNAME
-//                String username = String.valueOf(claims.get("username"));
-//                // GET VALUE OF AUTHORITIES TO PAYLOAD OF JWT
-//                String authorities = String.valueOf(claims.get("authorities"));
-//
-//                System.out.println(authorities);
-//
-//                List<GrantedAuthority> auths = AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
-//                Authentication authentication = new UsernamePasswordAuthenticationToken(username,null,auths);
-//
-//                // SET AUTHENTICATION IN THE SECURITY CONTEXT
-//                SecurityContextHolder.getContext().setAuthentication(authentication);
-//
-//            } catch (JwtException e) {
-//                throw new BadCredentialsException("Invalid token ... from JWT header");
-//            }
-//        }
-//        filterChain.doFilter(request, response);
-//    }
 
-//    System.out.println("1");
-//    String jwt = ((HttpServletRequest) request).getHeader(JwtConstant.JWT_HEADER);
-//        System.out.println("2");
-//        if (jwt != null) {
-//        System.out.println("3");
-//        jwt = jwt.substring(7);
-//        System.out.println("4");
-//        try {
-//            // AUTHORIZATION JWT
-//            System.out.println("5");
-//            SecretKey key = Keys.hmacShaKeyFor(JwtConstant.SERECT_KEY.getBytes());
-//            System.out.println("6");
-//            // DECRYPTION JWT
-//            Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt).getBody();
-//            System.out.println("7");
-//            // GET VALUE OF USERNAME
-//            String username = String.valueOf(claims.get("username"));
-//            System.out.println("8");
-//            // GET VALUE OF AUTHORITIES TO PAYLOAD OF JWT
-//            String authorities = String.valueOf(claims.get("authorities"));
-//            System.out.println("9");
-//
-//            System.out.println("authorities : " + authorities);
-//            System.out.println("10");
-//            List<GrantedAuthority> auths = AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
-//            System.out.println("11");
-//            Authentication authentication = new UsernamePasswordAuthenticationToken(username,null,auths);
-//            System.out.println("12");
-//            // SET AUTHENTICATION IN THE SECURITY CONTEXT
-//            SecurityContextHolder.getContext().setAuthentication(authentication);
-//
-//        } catch (JwtException e) {
-//            throw new BadCredentialsException("Invalid token ... from JWT header");
-//        }
-//    }
-//        filterChain.doFilter(request, response);
-//}
         String authHeader = request.getHeader("Authorization");
         String token = null;
         String username = null;

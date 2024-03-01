@@ -30,7 +30,6 @@ import java.util.Collections;
 @EnableWebSecurity
 public class CustomFilterSecurity {
 
-
     private JwtValidator jwtValidator;
     @Autowired
     public void setJwtValidator (JwtValidator jwtValidator){
