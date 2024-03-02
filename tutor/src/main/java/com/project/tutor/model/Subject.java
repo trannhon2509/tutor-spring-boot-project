@@ -1,6 +1,6 @@
 package com.project.tutor.model;
 
-import com.project.tutor.mapper.TutorSubjectUser;
+import com.project.tutor.mapper.TutorSubject;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,6 +36,6 @@ public class Subject {
     private double oneHourTeaching;
 
     @OneToMany(mappedBy = "subject",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<TutorSubjectUser> listTutorSubjectUser = new ArrayList<>();
+    private List<TutorSubject> listTutorSubject = new ArrayList<>();
 
 }

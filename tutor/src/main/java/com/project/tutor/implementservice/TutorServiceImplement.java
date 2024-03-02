@@ -3,17 +3,14 @@ package com.project.tutor.implementservice;
 
 import com.project.tutor.dto.SubjectDTO;
 import com.project.tutor.dto.TeachingDTO;
-import com.project.tutor.dto.UserDTO;
 import com.project.tutor.many.dto.TutorManyDTO;
-import com.project.tutor.many.dto.UserManyDTO;
-import com.project.tutor.mapper.TutorSubjectUser;
+import com.project.tutor.mapper.TutorSubject;
 import com.project.tutor.model.Subject;
 import com.project.tutor.model.Teaching;
 import com.project.tutor.model.Tutor;
-import com.project.tutor.model.User;
 import com.project.tutor.repository.SubjectRepository;
 import com.project.tutor.repository.TutorRepository;
-import com.project.tutor.repository.TutorSubjectUserRepository;
+import com.project.tutor.repository.TutorSubjecRepository;
 import com.project.tutor.repository.UserRepository;
 import com.project.tutor.request.TutorRequest;
 import com.project.tutor.service.FileService;
@@ -37,7 +34,7 @@ public class TutorServiceImplement implements TutorService {
     @Autowired
     SubjectRepository subjectRepository;
     @Autowired
-    TutorSubjectUserRepository tutorSubjectUserRepository;
+    TutorSubjecRepository tutorSubjecRepository;
 
     @Autowired
     FileService fileService;
@@ -73,20 +70,20 @@ public class TutorServiceImplement implements TutorService {
             tutorManyDTO.setNumberTeachOfWeak(tutor.getNumberTeachOfWeek());
             tutorManyDTO.setSalaryRequest(tutor.getSalaryRequest());
             tutorManyDTO.setCreateAt(tutor.getCreateAt());
-            List<TutorSubjectUser> listTutorSubjectUser = tutor.getListTutorSubjectUser();
+            List<TutorSubject> listTutorSubject = tutor.getListTutorSubject();
             List<Teaching> listTeachings = tutor.getListTeachings();
 
             List<SubjectDTO> listSubjectDTOs = new ArrayList<>();
             List<TeachingDTO> listTeachingDTO = new ArrayList<>();
 
-            for (TutorSubjectUser tutorSubjectUser : listTutorSubjectUser) {
+            for (TutorSubject tutorSubject : listTutorSubject) {
                 SubjectDTO subjectDTO = new SubjectDTO();
-                subjectDTO.setId(tutorSubjectUser.getSubject().getId());
-                subjectDTO.setSubjectName(tutorSubjectUser.getSubject().getSubjectName());
-                subjectDTO.setDescription(tutorSubjectUser.getSubject().getDescription());
-                subjectDTO.setTotalMoneyMonthTeaching(tutorSubjectUser.getSubject().getTotalMoneyMonthTeaching());
-                subjectDTO.setNumberTeachOfWeek(tutorSubjectUser.getSubject().getNumberTeachOfWeek());
-                subjectDTO.setOneHourTeaching(tutorSubjectUser.getSubject().getOneHourTeaching());
+                subjectDTO.setId(tutorSubject.getSubject().getId());
+                subjectDTO.setSubjectName(tutorSubject.getSubject().getSubjectName());
+                subjectDTO.setDescription(tutorSubject.getSubject().getDescription());
+                subjectDTO.setTotalMoneyMonthTeaching(tutorSubject.getSubject().getTotalMoneyMonthTeaching());
+                subjectDTO.setNumberTeachOfWeek(tutorSubject.getSubject().getNumberTeachOfWeek());
+                subjectDTO.setOneHourTeaching(tutorSubject.getSubject().getOneHourTeaching());
 
                 listSubjectDTOs.add(subjectDTO);
             }
@@ -172,17 +169,17 @@ public class TutorServiceImplement implements TutorService {
                 }
                 Tutor saveTutor = tutorRepository.save(newTutor);
 
-                List<TutorSubjectUser> listTutorSubjectUser = new ArrayList<>();
+                List<TutorSubject> listTutorSubject = new ArrayList<>();
                 for (Subject subject : listSubject) {
 
                     Subject existingSubject = subjectRepository.findById(subject.getId()).get();
 
-                    TutorSubjectUser tutorSubjectUser = new TutorSubjectUser();
-                    tutorSubjectUser.setTutor(saveTutor);
-                    tutorSubjectUser.setSubject(existingSubject);
-                    listTutorSubjectUser.add(tutorSubjectUser);
+                    TutorSubject tutorSubject = new TutorSubject();
+                    tutorSubject.setTutor(saveTutor);
+                    tutorSubject.setSubject(existingSubject);
+                    listTutorSubject.add(tutorSubject);
                 }
-                tutorSubjectUserRepository.saveAll(listTutorSubjectUser);
+                tutorSubjecRepository.saveAll(listTutorSubject);
             }
         } catch (Exception e) {
             throw new RuntimeException("Cannot add tutor !");
@@ -250,22 +247,22 @@ public class TutorServiceImplement implements TutorService {
                         }
                     }
 
-                    tutorSubjectUserRepository.deleteAllByTutor_Id(tutorId);
+                    tutorSubjecRepository.deleteAllByTutor_Id(tutorId);
 
                     tutor = tutorRepository.save(tutor);
 
-                    List<TutorSubjectUser> listTutorSubjectUsers = new ArrayList<>();
+                    List<TutorSubject> listTutorSubjects = new ArrayList<>();
                     if (request.getListSubjects() != null) {
                         for (Subject subject : request.getListSubjects()) {
                             Subject existingSubject = subjectRepository.findById(subject.getId()).orElse(null);
                             if (existingSubject != null) {
-                                TutorSubjectUser tutorSubjectUser = new TutorSubjectUser();
-                                tutorSubjectUser.setTutor(tutor);
-                                tutorSubjectUser.setSubject(existingSubject);
-                                listTutorSubjectUsers.add(tutorSubjectUser);
+                                TutorSubject tutorSubject = new TutorSubject();
+                                tutorSubject.setTutor(tutor);
+                                tutorSubject.setSubject(existingSubject);
+                                listTutorSubjects.add(tutorSubject);
                             }
                         }
-                        tutorSubjectUserRepository.saveAll(listTutorSubjectUsers);
+                        tutorSubjecRepository.saveAll(listTutorSubjects);
                     }
 
                     return true;
@@ -286,7 +283,7 @@ public class TutorServiceImplement implements TutorService {
         Optional<Tutor> checkTutorExistOrNot = tutorRepository.findById(tutorId);
         if (checkTutorExistOrNot.isPresent()) {
             Tutor tutor = checkTutorExistOrNot.get();
-            List<TutorSubjectUser> listTutorSubjectUser = tutorSubjectUserRepository.findByTutorId(tutorId);
+            List<TutorSubject> listTutorSubject = tutorSubjecRepository.findByTutorId(tutorId);
 
             TutorManyDTO tutorManyDTO = new TutorManyDTO();
             tutorManyDTO.setId(tutor.getId());
@@ -311,7 +308,7 @@ public class TutorServiceImplement implements TutorService {
             tutorManyDTO.setSalaryRequest(tutor.getSalaryRequest());
             tutorManyDTO.setCreateAt(tutor.getCreateAt());
 
-            List<SubjectDTO> listSubjectDT0 = listTutorSubjectUser.stream().map(
+            List<SubjectDTO> listSubjectDT0 = listTutorSubject.stream().map(
                     TubjectDTO -> {
                         SubjectDTO subjectDTO = new SubjectDTO();
                         subjectDTO.setId(TubjectDTO.getId());

@@ -2,12 +2,12 @@ package com.project.tutor.implementservice;
 
 import com.project.tutor.dto.TutorDTO;
 import com.project.tutor.many.dto.SubjectManyDTO;
-import com.project.tutor.mapper.TutorSubjectUser;
+import com.project.tutor.mapper.TutorSubject;
 import com.project.tutor.model.Subject;
 import com.project.tutor.model.Tutor;
 import com.project.tutor.repository.SubjectRepository;
 import com.project.tutor.repository.TutorRepository;
-import com.project.tutor.repository.TutorSubjectUserRepository;
+import com.project.tutor.repository.TutorSubjecRepository;
 import com.project.tutor.request.SubjectRequest;
 import com.project.tutor.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class SubjectImplementService implements SubjectService {
     @Autowired
     SubjectRepository subjectRepository;
     @Autowired
-    TutorSubjectUserRepository tutorSubjectUserRepository;
+    TutorSubjecRepository tutorSubjecRepository;
 
     @Autowired
     TutorRepository tutorRepository;
@@ -44,33 +44,33 @@ public class SubjectImplementService implements SubjectService {
             subjectDTO.setNumberTeachOfWeek(subject.getNumberTeachOfWeek());
             subjectDTO.setOneHourTeaching(subject.getOneHourTeaching());
 
-            List<TutorSubjectUser> listTutorSubjectUserList = subject.getListTutorSubjectUser();
+            List<TutorSubject> listTutorSubjectList = subject.getListTutorSubject();
 
             List<TutorDTO> tutorDTOList = new ArrayList<>();
 
-            for (TutorSubjectUser tutorSubjectUser : listTutorSubjectUserList) {
+            for (TutorSubject tutorSubject : listTutorSubjectList) {
                 TutorDTO tutorDTO = new TutorDTO();
-                tutorDTO.setId(tutorSubjectUser.getTutor().getId());
-                tutorDTO.setCityTech(tutorSubjectUser.getTutor().getCityTeach());
-                tutorDTO.setFullName(tutorSubjectUser.getTutor().getFullName());
-                tutorDTO.setGender(tutorSubjectUser.getTutor().getGender());
-                tutorDTO.setDateOfBirth(tutorSubjectUser.getTutor().getDateOfBirth());
-                tutorDTO.setAddress(tutorSubjectUser.getTutor().getAddress());
-                tutorDTO.setPhoneNumber(tutorSubjectUser.getTutor().getPhoneNumber());
-                tutorDTO.setEmail(tutorSubjectUser.getTutor().getEmail());
-                tutorDTO.setVoice(tutorSubjectUser.getTutor().getVoice());
-                tutorDTO.setMajor(tutorSubjectUser.getTutor().getMajor());
-                tutorDTO.setEcademicLevel(tutorSubjectUser.getTutor().getEcademicLevel());
-                tutorDTO.setDescription(tutorSubjectUser.getTutor().getDescription());
-                tutorDTO.setCitizenIdentificationCard(tutorSubjectUser.getTutor().getCitizenIdentificationCard());
-                tutorDTO.setIssued(tutorSubjectUser.getTutor().getIssued());
-                tutorDTO.setCitizenIdentificationCardFront(tutorSubjectUser.getTutor().getCitizenIdentificationCardFront());
-                tutorDTO.setCitizenIdentificationCardFrontBackside(tutorSubjectUser.getTutor().getCitizenIdentificationCardFrontBackside());
-                tutorDTO.setCardPhoto(tutorSubjectUser.getTutor().getCardPhoto());
-                tutorDTO.setSchoolTeachOrStudent(tutorSubjectUser.getTutor().getSchoolTeachOrStudent());
-                tutorDTO.setNumberTeachOfWeak(tutorSubjectUser.getTutor().getNumberTeachOfWeek());
-                tutorDTO.setSalaryRequest(tutorSubjectUser.getTutor().getSalaryRequest());
-                tutorDTO.setCreateAt(tutorSubjectUser.getTutor().getCreateAt());
+                tutorDTO.setId(tutorSubject.getTutor().getId());
+                tutorDTO.setCityTech(tutorSubject.getTutor().getCityTeach());
+                tutorDTO.setFullName(tutorSubject.getTutor().getFullName());
+                tutorDTO.setGender(tutorSubject.getTutor().getGender());
+                tutorDTO.setDateOfBirth(tutorSubject.getTutor().getDateOfBirth());
+                tutorDTO.setAddress(tutorSubject.getTutor().getAddress());
+                tutorDTO.setPhoneNumber(tutorSubject.getTutor().getPhoneNumber());
+                tutorDTO.setEmail(tutorSubject.getTutor().getEmail());
+                tutorDTO.setVoice(tutorSubject.getTutor().getVoice());
+                tutorDTO.setMajor(tutorSubject.getTutor().getMajor());
+                tutorDTO.setEcademicLevel(tutorSubject.getTutor().getEcademicLevel());
+                tutorDTO.setDescription(tutorSubject.getTutor().getDescription());
+                tutorDTO.setCitizenIdentificationCard(tutorSubject.getTutor().getCitizenIdentificationCard());
+                tutorDTO.setIssued(tutorSubject.getTutor().getIssued());
+                tutorDTO.setCitizenIdentificationCardFront(tutorSubject.getTutor().getCitizenIdentificationCardFront());
+                tutorDTO.setCitizenIdentificationCardFrontBackside(tutorSubject.getTutor().getCitizenIdentificationCardFrontBackside());
+                tutorDTO.setCardPhoto(tutorSubject.getTutor().getCardPhoto());
+                tutorDTO.setSchoolTeachOrStudent(tutorSubject.getTutor().getSchoolTeachOrStudent());
+                tutorDTO.setNumberTeachOfWeak(tutorSubject.getTutor().getNumberTeachOfWeek());
+                tutorDTO.setSalaryRequest(tutorSubject.getTutor().getSalaryRequest());
+                tutorDTO.setCreateAt(tutorSubject.getTutor().getCreateAt());
 
                 tutorDTOList.add(tutorDTO);
             }
@@ -99,17 +99,17 @@ public class SubjectImplementService implements SubjectService {
 
             Subject saveSubject = subjectRepository.save(newSubject);
 
-            List<TutorSubjectUser> listTutorSubjectUser = new ArrayList<>();
+            List<TutorSubject> listTutorSubject = new ArrayList<>();
             for (Tutor tutor : listTutors) {
                 Tutor existingTutor = tutorRepository.findById(tutor.getId()).get();
                 if (existingTutor != null) {
-                    TutorSubjectUser tutorSubjectUser = new TutorSubjectUser();
-                    tutorSubjectUser.setSubject(saveSubject);
-                    tutorSubjectUser.setTutor(existingTutor);
-                    listTutorSubjectUser.add(tutorSubjectUser);
+                    TutorSubject tutorSubject = new TutorSubject();
+                    tutorSubject.setSubject(saveSubject);
+                    tutorSubject.setTutor(existingTutor);
+                    listTutorSubject.add(tutorSubject);
                 }
             }
-            tutorSubjectUserRepository.saveAll(listTutorSubjectUser);
+            tutorSubjecRepository.saveAll(listTutorSubject);
         } catch (Exception e) {
             throw new RuntimeException("Cann't add subject!!");
         }
@@ -140,20 +140,20 @@ public class SubjectImplementService implements SubjectService {
             subject.setNumberTeachOfWeek(request.getNumberTeachOfWeek());
             subject.setOneHourTeaching(request.getOneHourTeaching());
 
-            tutorSubjectUserRepository.deleteAllBySubject_Id(subjectId);
+            tutorSubjecRepository.deleteAllBySubject_Id(subjectId);
 
             subject = subjectRepository.save(subject);
 
-            List<TutorSubjectUser> listTutorSubjectUser = new ArrayList<>();
+            List<TutorSubject> listTutorSubject = new ArrayList<>();
             if (request.getListTutors() != null) {
                 for (Tutor tutor : request.getListTutors()) {
                     Tutor existingTutor = tutorRepository.findById(tutor.getId()).get();
-                    TutorSubjectUser tutorSubjectUser = new TutorSubjectUser();
-                    tutorSubjectUser.setSubject(subject);
-                    tutorSubjectUser.setTutor(existingTutor);
-                    listTutorSubjectUser.add(tutorSubjectUser);
+                    TutorSubject tutorSubject = new TutorSubject();
+                    tutorSubject.setSubject(subject);
+                    tutorSubject.setTutor(existingTutor);
+                    listTutorSubject.add(tutorSubject);
                 }
-                tutorSubjectUserRepository.saveAll(listTutorSubjectUser);
+                tutorSubjecRepository.saveAll(listTutorSubject);
             }
             return true;
         }
@@ -165,7 +165,7 @@ public class SubjectImplementService implements SubjectService {
         Optional<Subject> checkSubjectExistOrNot = subjectRepository.findById(subjectId);
         if (checkSubjectExistOrNot.isPresent()) {
             Subject subject = checkSubjectExistOrNot.get();
-            List<TutorSubjectUser> tutorSubjectUsers = tutorSubjectUserRepository.findBySubjectId(subjectId);
+            List<TutorSubject> tutorSubjects = tutorSubjecRepository.findBySubjectId(subjectId);
 
             SubjectManyDTO SubjectManyDTO = new SubjectManyDTO();
             SubjectManyDTO.setId(subject.getId());
@@ -175,7 +175,7 @@ public class SubjectImplementService implements SubjectService {
             SubjectManyDTO.setNumberTeachOfWeek(subject.getNumberTeachOfWeek());
             SubjectManyDTO.setOneHourTeaching(subject.getOneHourTeaching());
 
-            List<TutorDTO> listTutorDTO = tutorSubjectUsers.stream().map(
+            List<TutorDTO> listTutorDTO = tutorSubjects.stream().map(
                     TubjectDTO -> {
                         TutorDTO tutorDTO = new TutorDTO();
                         tutorDTO.setId(TubjectDTO.getTutor().getId());

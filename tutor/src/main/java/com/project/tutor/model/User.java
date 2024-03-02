@@ -1,20 +1,19 @@
 package com.project.tutor.model;
 
-import com.project.tutor.mapper.TutorSubjectUser;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.project.tutor.mapper.Booking;
 import com.project.tutor.mapper.UserRole;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "user")
 public class User {
     @Id
@@ -59,14 +58,15 @@ public class User {
     @UpdateTimestamp
     private LocalDateTime creatAt;
 
-    @OneToMany(mappedBy = "user" , fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<UserRole> listUserRoles = new ArrayList<>();
 
 
     @OneToMany(mappedBy = "user" , fetch = FetchType.LAZY, cascade =  CascadeType.ALL)
     private List<FeedBack> listFeedbacks = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user" , fetch = FetchType.LAZY, cascade =  CascadeType.ALL)
+    @JsonIgnore
+    private List<Booking> listBooking = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade =  CascadeType.ALL)
-    private List<TutorSubjectUser> listTutorSubjectUser = new ArrayList<>();
 }

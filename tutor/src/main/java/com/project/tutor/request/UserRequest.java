@@ -2,6 +2,7 @@ package com.project.tutor.request;
 
 import com.project.tutor.model.FeedBack;
 import com.project.tutor.model.Role;
+import com.project.tutor.model.Tutor;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -26,6 +27,7 @@ public class UserRequest {
    private String activeCode;
    private LocalDateTime createAt;
    private List<Role> listUserRoles;
+   private List<Tutor> listTutors;
    private List<FeedBack> listFeedbacks;
 
    public boolean isActive() {

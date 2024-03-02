@@ -1,21 +1,19 @@
 package com.project.tutor.model;
 
-import com.project.tutor.mapper.TutorSubjectUser;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.project.tutor.mapper.Booking;
+import com.project.tutor.mapper.TutorSubject;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity(name = "tutor")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Tutor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -83,7 +81,7 @@ public class Tutor {
     private LocalDateTime createAt;
 
     @OneToMany(mappedBy = "tutor" ,fetch = FetchType.LAZY , cascade =  CascadeType.ALL)
-    private List<TutorSubjectUser> listTutorSubjectUser = new ArrayList<>();
+    private List<TutorSubject> listTutorSubject = new ArrayList<>();
 
     @OneToMany(mappedBy = "tutor",cascade = CascadeType.ALL)
     private List<Teaching> listTeachings = new ArrayList<>();
@@ -93,5 +91,9 @@ public class Tutor {
 
     @OneToMany(mappedBy = "tutor" , cascade = CascadeType.ALL)
     private List<FeedBack> listFeedbacks = new ArrayList<>();
+
+    @OneToMany(mappedBy = "tutor" , cascade = CascadeType.ALL)
+            @JsonIgnore
+    private List<Booking> listBooking = new ArrayList<>();
 
 }

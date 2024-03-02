@@ -26,6 +26,6 @@ public class Role {
     @Column(name ="create_at")
     private LocalDateTime createAt;
 
-    @OneToMany( mappedBy = "role",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @OneToMany( mappedBy = "role",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     private List<UserRole> ListUserRoles = new ArrayList<>();
 }

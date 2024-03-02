@@ -9,7 +9,7 @@ import java.util.List;
 @Service
 public interface TeachingService {
     public List<TeachingDTO> getAllListTeaching ();
-    public TeachingRequest addTeaching (TeachingRequest request);
+    public boolean addTeaching (TeachingRequest request);
 
     public boolean deleteTeaching (int teachingId);
 

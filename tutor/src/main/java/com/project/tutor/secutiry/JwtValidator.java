@@ -34,12 +34,10 @@ public class JwtValidator extends OncePerRequestFilter {
     public void setJwtProvider(JwtProvider jwtProvider){
         this.jwtProvider = jwtProvider;
     }
-    private UserService userService;
 
     @Autowired
-    public void setUserService (UserService userService){
-        this.userService = userService;
-    }
+    CustomUserDetails customUserDetails;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
@@ -51,7 +49,7 @@ public class JwtValidator extends OncePerRequestFilter {
             username = jwtProvider.extractUsername(token);
         }
         if(username!=null && SecurityContextHolder.getContext().getAuthentication()==null){
-            UserDetails userDetails = userService.loadUserByUsername(username);
+            UserDetails userDetails = customUserDetails.loadUserByUsername(username);
             if (jwtProvider.validateToken(token, userDetails)){
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

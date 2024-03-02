@@ -2,7 +2,6 @@ package com.project.tutor.mapper;
 
 import com.project.tutor.model.Subject;
 import com.project.tutor.model.Tutor;
-import com.project.tutor.model.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,11 +12,11 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "tutor_subject_user")
-public class TutorSubjectUser {
+@Entity(name = "tutor_subject")
+public class TutorSubject {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
-    @Column(name = "tutor_subject_user_id", unique = true , nullable = false)
+    @Column(name = "tutor_subject_id", unique = true , nullable = false)
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -27,10 +26,6 @@ public class TutorSubjectUser {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tutor_id")
     private Tutor tutor;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
 
     @Column(name = "start_time")
     private String startTime;

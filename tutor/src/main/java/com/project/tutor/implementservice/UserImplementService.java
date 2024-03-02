@@ -11,6 +11,7 @@ import com.project.tutor.repository.UserRepository;
 import com.project.tutor.repository.UserRoleRepository;
 import com.project.tutor.request.UserRequest;
 import com.project.tutor.respone.ResponeData;
+import com.project.tutor.secutiry.CustomUserDetails;
 import com.project.tutor.secutiry.JwtProvider;
 import com.project.tutor.service.EmailService;
 import com.project.tutor.service.UserService;
@@ -46,10 +47,13 @@ public class UserImplementService implements UserService {
     private UserRoleRepository userRoleRepository;
     private EmailService emailService;
 
+    private CustomUserDetails customUserDetails;
+
 
     @Autowired
     public UserImplementService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder,
-                                @Lazy JwtProvider jwtProvider, UserRoleRepository userRoleRepository, EmailService emailService
+                                @Lazy JwtProvider jwtProvider, UserRoleRepository userRoleRepository, EmailService emailService,
+                                CustomUserDetails  customUserDetails
                               ) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
@@ -57,6 +61,7 @@ public class UserImplementService implements UserService {
         this.jwtProvider = jwtProvider;
         this.userRoleRepository = userRoleRepository;
         this.emailService = emailService;
+        this.customUserDetails = customUserDetails;
     }
 
     @Override
@@ -191,7 +196,7 @@ public class UserImplementService implements UserService {
     }
 
     public Authentication authentication(String username, String password) {
-        UserDetails userDetails = loadUserByUsername(username);
+        UserDetails userDetails = customUserDetails.loadUserByUsername(username);
         if (userDetails == null) {
             throw new BadCredentialsException("Invalid username");
         }
@@ -405,28 +410,6 @@ public class UserImplementService implements UserService {
         return userDTOList;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserRole user = userRoleRepository.findByUserUsername(username);
-        if (user == null) {
-            throw new BadCredentialsException("Cannot found username : " + username);
-        }
-
-        // CHECK ACCOUNT ACTIVATED OR NOT
-        if (!user.getUser().isActive()) {
-            throw new BadCredentialsException("Account don't acive : ");
-        }
-
-//        Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-//        grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().getRoleName()));
-        return new org.springframework.security.core.userdetails.User(user.getUser().getUsername(), user.getUser().getPassword(), roleAuthorization(user.getRole().getListUserRoles()));
-    }
-
-    public Collection<? extends GrantedAuthority> roleAuthorization(Collection<UserRole> roles) {
-        return roles.stream().map(
-                role -> new SimpleGrantedAuthority(role.getRole().getRoleName())
-        ).collect(Collectors.toList());
-    }
 }
 
 

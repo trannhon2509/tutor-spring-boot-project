@@ -36,9 +36,9 @@ public class CustomFilterSecurity {
         this.jwtValidator = jwtValidator;
     }
     @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider (UserDetailsService userDetailsService){
+    public DaoAuthenticationProvider daoAuthenticationProvider (UserDetailsService userService){
         DaoAuthenticationProvider dap = new DaoAuthenticationProvider();
-        dap.setUserDetailsService(userDetailsService);
+        dap.setUserDetailsService(userService);
         dap.setPasswordEncoder(passwordEncoder());
         return dap;
     }
@@ -49,6 +49,7 @@ public class CustomFilterSecurity {
         authorizeHttpRequests(
                 authorize -> authorize.requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/api/**").hasAuthority("ADMIN")
+                        .requestMatchers("/booking/**").hasAuthority("USER")
                         .anyRequest().authenticated()).
         addFilterBefore( jwtValidator, UsernamePasswordAuthenticationFilter.class).
         csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(new CorsConfigurationSource() {

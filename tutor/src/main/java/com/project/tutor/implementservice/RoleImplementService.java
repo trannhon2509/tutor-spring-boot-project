@@ -69,11 +69,9 @@ public class RoleImplementService implements RoleService {
             String roleName = request.getRoleName();
             LocalDateTime createAt = request.getCreateAt();
             List<User> listUsers = request.getListUsers();
-
             if (createAt == null) {
                 createAt = LocalDateTime.now();
             }
-
             Role newRole = new Role();
             newRole.setRoleName(roleName);
             newRole.setCreateAt(createAt);
