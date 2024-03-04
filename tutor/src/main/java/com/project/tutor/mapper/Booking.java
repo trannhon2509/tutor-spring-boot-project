@@ -1,5 +1,6 @@
 package com.project.tutor.mapper;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.tutor.model.Tutor;
 import com.project.tutor.model.User;
 import jakarta.persistence.*;
@@ -19,6 +20,7 @@ public class Booking {
 
     @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.ALL)

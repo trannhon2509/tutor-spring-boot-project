@@ -1,5 +1,6 @@
 package com.project.tutor.many.dto;
 
+import com.project.tutor.dto.FeedBackDTO;
 import com.project.tutor.dto.SubjectDTO;
 import com.project.tutor.dto.TeachingDTO;
 import lombok.AllArgsConstructor;
@@ -38,4 +39,5 @@ public class TutorManyDTO {
     private LocalDateTime createAt;
     private List<SubjectDTO> listSubjectDTO;
     private List<TeachingDTO> listTeachingDTO;
+    private List<FeedBackDTO> listFeedbackDTO;
 }

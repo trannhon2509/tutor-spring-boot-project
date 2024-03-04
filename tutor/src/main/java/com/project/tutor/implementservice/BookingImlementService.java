@@ -32,7 +32,7 @@ public class BookingImlementService implements BookingService {
     @Autowired
     UserRepository userRepository;
 
-@Autowired
+   @Autowired
     CustomUserDetails customUserDetails;
 
     @Override
@@ -44,6 +44,7 @@ public class BookingImlementService implements BookingService {
             if(userDetails == null){
                 throw new  BadCredentialsException("User not found");
             }
+
             User currentUser = userRepository.findByUsername(username);
             List<Booking> bookings = new ArrayList<>();
             for (Map<String, Integer> tutorMap : listTutorMaps) {

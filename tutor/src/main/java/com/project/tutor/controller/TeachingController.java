@@ -1,19 +1,18 @@
 package com.project.tutor.controller;
 
 import com.project.tutor.request.TeachingRequest;
-import com.project.tutor.respone.ResponeData;
+import com.project.tutor.respone.ResponeDataAuth;
+import com.project.tutor.respone.ResponseData;
 import com.project.tutor.service.TeachingService;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/api/teaching")
 @RestController
 public class TeachingController {
-    public static ResponeData data = new ResponeData();
+    public static ResponseData data = new ResponseData();
 
     @Autowired
     TeachingService teachingService;

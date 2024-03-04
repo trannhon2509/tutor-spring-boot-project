@@ -89,7 +89,7 @@ public class Tutor {
     @OneToMany(mappedBy = "tutor" , cascade = CascadeType.ALL)
     private List<Payment> listPayment = new ArrayList<>();
 
-    @OneToMany(mappedBy = "tutor" , cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "tutor" ,fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<FeedBack> listFeedbacks = new ArrayList<>();
 
     @OneToMany(mappedBy = "tutor" , cascade = CascadeType.ALL)

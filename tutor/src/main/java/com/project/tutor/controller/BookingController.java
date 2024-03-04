@@ -1,6 +1,7 @@
 package com.project.tutor.controller;
 
-import com.project.tutor.respone.ResponeData;
+import com.project.tutor.respone.ResponeDataAuth;
+import com.project.tutor.respone.ResponseData;
 import com.project.tutor.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,22 +16,20 @@ import java.util.List;
 import java.util.Map;
 
 
-@RequestMapping("/booking")
+@RequestMapping("/api/booking")
 @RestController
 public class BookingController {
-    public static ResponeData data = new ResponeData();
+    public static ResponseData data = new ResponseData();
 
     @Autowired
     BookingService bookingService;
 
     @PostMapping("/add")
     public ResponseEntity<?> addBooking(@RequestBody List<Map<String, Integer>> listTutors) {
-        try {
             boolean checkBooking = bookingService.addBooking(listTutors);
+            data.setData(checkBooking ? true : false);
+            data.setMsg(checkBooking ? "Booking success" : "Booking fail!");
             return new ResponseEntity<>(checkBooking, HttpStatus.OK);
-        } catch (BadCredentialsException e) {
-            return new ResponseEntity<>("Booking failed: " + e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
     }
 
 }

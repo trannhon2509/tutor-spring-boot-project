@@ -1,29 +1,21 @@
 package com.project.tutor.controller;
 
 import com.project.tutor.many.dto.TutorManyDTO;
-import com.project.tutor.model.Subject;
 import com.project.tutor.request.TutorRequest;
-import com.project.tutor.respone.ResponeData;
+import com.project.tutor.respone.ResponeDataAuth;
+import com.project.tutor.respone.ResponseData;
 import com.project.tutor.service.FileService;
 import com.project.tutor.service.TutorService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/tutor")
 public class TutorController {
-    public static ResponeData data = new ResponeData();
+    public static ResponseData data = new ResponseData();
     @Autowired
     TutorService tutorService;
 

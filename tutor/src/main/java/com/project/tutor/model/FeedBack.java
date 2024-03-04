@@ -1,17 +1,14 @@
 package com.project.tutor.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.project.tutor.model.Tutor;
 import com.project.tutor.model.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "feedback")
@@ -24,19 +21,19 @@ public class FeedBack {
     @Column(name = "content")
     private String content;
 
-    @Column(name = "rank")
-    private double rank;
+    @Column(name = "rating")
+    private double rating;
 
     @Column(name = "create_at")
     private LocalDateTime createAt;
 
     @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.ALL)
     @JoinColumn(name = "tutor_id")
+    @JsonIgnoreProperties("listFeedbacks")
     private Tutor tutor;
 
     @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties("listFeedbacks")
     private User user;
-
-
 }

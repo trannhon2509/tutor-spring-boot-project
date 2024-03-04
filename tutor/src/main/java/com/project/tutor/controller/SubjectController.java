@@ -1,11 +1,10 @@
 package com.project.tutor.controller;
 
-import com.project.tutor.dto.SubjectDTO;
 import com.project.tutor.many.dto.SubjectManyDTO;
 import com.project.tutor.request.SubjectRequest;
-import com.project.tutor.respone.ResponeData;
+import com.project.tutor.respone.ResponeDataAuth;
+import com.project.tutor.respone.ResponseData;
 import com.project.tutor.service.SubjectService;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/subject")
 public class SubjectController {
-    public  static ResponeData data = new ResponeData();
+    public static ResponseData data = new ResponseData();
     @Autowired
     SubjectService subjectService;
 

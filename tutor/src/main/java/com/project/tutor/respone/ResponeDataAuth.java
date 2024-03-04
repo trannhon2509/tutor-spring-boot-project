@@ -4,13 +4,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Objects;
-
 @Getter
 @Setter
 @NoArgsConstructor
-public class ResponeData {
-    public String jwt;
+public class ResponeDataAuth {
+    public String token;
     private String msg;
     private Object data;
 }

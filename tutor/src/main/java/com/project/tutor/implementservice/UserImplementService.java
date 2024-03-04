@@ -1,16 +1,19 @@
 package com.project.tutor.implementservice;
 
+import com.project.tutor.dto.FeedBackDTO;
 import com.project.tutor.dto.RoleDTO;
 import com.project.tutor.many.dto.LearningManyDTO;
 import com.project.tutor.many.dto.UserManyDTO;
 import com.project.tutor.mapper.UserRole;
+import com.project.tutor.model.FeedBack;
 import com.project.tutor.model.Role;
 import com.project.tutor.model.User;
+import com.project.tutor.repository.FeedBackRepository;
 import com.project.tutor.repository.RoleRepository;
 import com.project.tutor.repository.UserRepository;
 import com.project.tutor.repository.UserRoleRepository;
 import com.project.tutor.request.UserRequest;
-import com.project.tutor.respone.ResponeData;
+import com.project.tutor.respone.ResponeDataAuth;
 import com.project.tutor.secutiry.CustomUserDetails;
 import com.project.tutor.secutiry.JwtProvider;
 import com.project.tutor.service.EmailService;
@@ -20,18 +23,14 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -39,7 +38,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class UserImplementService implements UserService {
-    public final static ResponeData data = new ResponeData();
+    public final static ResponeDataAuth data = new ResponeDataAuth();
     private UserRepository userRepository;
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
@@ -49,12 +48,13 @@ public class UserImplementService implements UserService {
 
     private CustomUserDetails customUserDetails;
 
+    private FeedBackRepository feedBackRepository;
 
     @Autowired
     public UserImplementService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder,
                                 @Lazy JwtProvider jwtProvider, UserRoleRepository userRoleRepository, EmailService emailService,
-                                CustomUserDetails  customUserDetails
-                              ) {
+                                CustomUserDetails customUserDetails, FeedBackRepository feedBackRepository
+    ) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -62,12 +62,13 @@ public class UserImplementService implements UserService {
         this.userRoleRepository = userRoleRepository;
         this.emailService = emailService;
         this.customUserDetails = customUserDetails;
+        this.feedBackRepository = feedBackRepository;
     }
 
     @Override
     @Transactional
-    public ResponeData signup(UserRequest request) {
-        ResponeData data = new ResponeData();
+    public ResponeDataAuth signup(UserRequest request) {
+        ResponeDataAuth data = new ResponeDataAuth();
         try {
             String username = request.getUsername();
             String password = request.getPassword();
@@ -139,10 +140,12 @@ public class UserImplementService implements UserService {
 //            String token = jwtProvider.generateToken(username);
 //            data.setJwt(token);
             data.setMsg("Signup success");
+            data.setData(true);
             return data;
         } catch (Exception e) {
-            data.setJwt(null);
+            data.setToken(null);
             data.setMsg("Signup failed");
+            data.setData(false);
             return data;
         }
     }
@@ -157,19 +160,19 @@ public class UserImplementService implements UserService {
             emailService.sendEmailResetPassword(email);
             return true;
         } catch (Exception e) {
-                throw new RuntimeException("Send mail forgot password fail!" + e.getMessage());
+            throw new RuntimeException("Send mail forgot password fail!" + e.getMessage());
         }
     }
 
     @Override
-    public boolean resetPassword(String email , UserRequest request) {
+    public boolean resetPassword(String email, UserRequest request) {
         try {
             User checkEmailUser = userRepository.findByEmail(email);
             if (checkEmailUser == null) {
                 throw new RuntimeException("Cannot found email : " + email);
             }
 
-            if(!request.getPasswordRepeat().equals(request.getPasswordRepeatNew())){
+            if (!request.getPasswordRepeat().equals(request.getPasswordRepeatNew())) {
                 throw new RuntimeException("New password and password repeat not macth!");
             }
 
@@ -188,11 +191,11 @@ public class UserImplementService implements UserService {
         List<User> listUser = userRepository.findAll();
         List<LearningManyDTO> listLearningMany = new ArrayList<>();
 
-        for (User user : listUser){
+        for (User user : listUser) {
             LearningManyDTO learningMany = new LearningManyDTO();
 
         }
-        return  null;
+        return null;
     }
 
     public Authentication authentication(String username, String password) {
@@ -208,8 +211,8 @@ public class UserImplementService implements UserService {
     }
 
     @Override
-    public ResponeData signin(UserRequest request) {
-        ResponeData data = new ResponeData();
+    public ResponeDataAuth signin(UserRequest request) {
+        ResponeDataAuth data = new ResponeDataAuth();
         try {
             String username = request.getUsername();
             String password = request.getPassword();
@@ -219,16 +222,14 @@ public class UserImplementService implements UserService {
 
             String token = jwtProvider.generateToken(username);
 
-            data.setJwt(token);
+            data.setToken(token);
             data.setMsg("Signin success");
-            return data;
-        } catch (BadCredentialsException e) {
-            data.setJwt(null);
-            data.setMsg(e.getMessage());
+            data.setData(true);
             return data;
         } catch (Exception e) {
-            data.setJwt(null);
+            data.setToken(null);
             data.setMsg("Signin fail");
+            data.setData(false);
             return data;
         }
     }
@@ -308,6 +309,8 @@ public class UserImplementService implements UserService {
             userMany.setActive(user.isActive());
             userMany.setCreateAt(user.getCreatAt());
 
+            List<FeedBack> listFeedbacks = user.getListFeedbacks();
+
             List<RoleDTO> roleDTOList = userRoles.stream()
                     .map(userRole -> {
                         RoleDTO roleDTO = new RoleDTO();
@@ -318,7 +321,20 @@ public class UserImplementService implements UserService {
                     })
                     .collect(Collectors.toList());
 
+            List<FeedBackDTO> listFeedBackDTO = listFeedbacks.stream().map(
+                    feedback -> {
+                        FeedBackDTO feedBackDTO = new FeedBackDTO();
+                        feedBackDTO.setFeedbackId(feedback.getId());
+                        feedBackDTO.setContent(feedback.getContent());
+                        feedBackDTO.setRating(feedback.getRating());
+                        feedBackDTO.setContent(feedback.getContent());
+                        feedBackDTO.setContent(feedback.getContent());
+
+                        return feedBackDTO;
+                    }).collect(Collectors.toList());
+
             userMany.setListRoleDTOs(roleDTOList);
+            userMany.setListFeedbackDTO(listFeedBackDTO);
             return userMany;
         } else {
             throw new RuntimeException("User not found with id: " + userId);
@@ -392,8 +408,10 @@ public class UserImplementService implements UserService {
             userMany.setCreateAt(user.getCreatAt());
 
             List<UserRole> userRoleList = userRoleRepository.findByUserId(user.getId());
+            List<FeedBack> listFeedbacks = user.getListFeedbacks();
 
             List<RoleDTO> listRoleDto = new ArrayList<>();
+            List<FeedBackDTO> listFeedbackDTO = new ArrayList<>();
 
             for (UserRole userRole : userRoleList) {
                 RoleDTO roleDTO = new RoleDTO();
@@ -403,7 +421,17 @@ public class UserImplementService implements UserService {
 
                 listRoleDto.add(roleDTO);
             }
+            for (FeedBack feedBack : listFeedbacks) {
+                FeedBackDTO feedBackDTO = new FeedBackDTO();
+                feedBackDTO.setFeedbackId(feedBack.getId());
+                feedBackDTO.setRating(feedBack.getRating());
+                feedBackDTO.setContent(feedBack.getContent());
+                feedBackDTO.setCreateAt(feedBack.getCreateAt());
+
+                listFeedbackDTO.add(feedBackDTO);
+            }
             userMany.setListRoleDTOs(listRoleDto);
+            userMany.setListFeedbackDTO(listFeedbackDTO);
             userDTOList.add(userMany);
         }
 

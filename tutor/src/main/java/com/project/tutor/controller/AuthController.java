@@ -1,7 +1,7 @@
 package com.project.tutor.controller;
 
 import com.project.tutor.request.UserRequest;
-import com.project.tutor.respone.ResponeData;
+import com.project.tutor.respone.ResponeDataAuth;
 import com.project.tutor.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-    public static ResponeData data = new ResponeData();
+    public static ResponeDataAuth data = new ResponeDataAuth();
     @Autowired
     UserService userService;
 

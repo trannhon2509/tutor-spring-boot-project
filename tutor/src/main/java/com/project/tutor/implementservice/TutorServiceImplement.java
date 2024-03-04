@@ -1,10 +1,12 @@
 package com.project.tutor.implementservice;
 
 
+import com.project.tutor.dto.FeedBackDTO;
 import com.project.tutor.dto.SubjectDTO;
 import com.project.tutor.dto.TeachingDTO;
 import com.project.tutor.many.dto.TutorManyDTO;
 import com.project.tutor.mapper.TutorSubject;
+import com.project.tutor.model.FeedBack;
 import com.project.tutor.model.Subject;
 import com.project.tutor.model.Teaching;
 import com.project.tutor.model.Tutor;
@@ -70,11 +72,14 @@ public class TutorServiceImplement implements TutorService {
             tutorManyDTO.setNumberTeachOfWeak(tutor.getNumberTeachOfWeek());
             tutorManyDTO.setSalaryRequest(tutor.getSalaryRequest());
             tutorManyDTO.setCreateAt(tutor.getCreateAt());
+
             List<TutorSubject> listTutorSubject = tutor.getListTutorSubject();
             List<Teaching> listTeachings = tutor.getListTeachings();
+            List<FeedBack> listFeedback = tutor.getListFeedbacks();
 
             List<SubjectDTO> listSubjectDTOs = new ArrayList<>();
             List<TeachingDTO> listTeachingDTO = new ArrayList<>();
+            List<FeedBackDTO> listFeedbackDTO = new ArrayList<>();
 
             for (TutorSubject tutorSubject : listTutorSubject) {
                 SubjectDTO subjectDTO = new SubjectDTO();
@@ -94,8 +99,20 @@ public class TutorServiceImplement implements TutorService {
                 teachingDTO.setSchedule(teaching.getSchedule());
                 listTeachingDTO.add(teachingDTO);
             }
+
+            for (FeedBack feedBack : listFeedback){
+                FeedBackDTO feedBackDTO = new FeedBackDTO();
+                feedBackDTO.setFeedbackId(feedBack.getId());
+                feedBackDTO.setContent(feedBack.getContent());
+                feedBackDTO.setRating(feedBack.getRating());
+                feedBackDTO.setCreateAt(feedBack.getCreateAt());
+
+                listFeedbackDTO.add(feedBackDTO);
+            }
             tutorManyDTO.setListSubjectDTO(listSubjectDTOs);
             tutorManyDTO.setListTeachingDTO(listTeachingDTO);
+            tutorManyDTO.setListFeedbackDTO(listFeedbackDTO);
+
             listTutorDTO.add(tutorManyDTO);
         }
 

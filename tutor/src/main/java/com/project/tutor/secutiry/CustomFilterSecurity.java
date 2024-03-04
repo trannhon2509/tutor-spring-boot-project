@@ -48,8 +48,11 @@ public class CustomFilterSecurity {
         http.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).
         authorizeHttpRequests(
                 authorize -> authorize.requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/api/**").hasAuthority("ADMIN")
-                        .requestMatchers("/booking/**").hasAuthority("USER")
+//                        .requestMatchers("/api/**").hasAuthority("ADMIN")
+//                        .requestMatchers("/booking/**").hasAuthority("USER")
+//                        .requestMatchers("/feedback/**").hasAuthority("USER")
+                        .requestMatchers("/api/booking/add","/api/feedback/add").hasAuthority("USER")
+                        .requestMatchers("/api/user/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated()).
         addFilterBefore( jwtValidator, UsernamePasswordAuthenticationFilter.class).
         csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(new CorsConfigurationSource() {

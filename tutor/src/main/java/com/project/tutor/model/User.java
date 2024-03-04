@@ -69,4 +69,5 @@ public class User {
     @JsonIgnore
     private List<Booking> listBooking = new ArrayList<>();
 
+
 }

@@ -1,6 +1,7 @@
 package com.project.tutor.controller;
 
-import com.project.tutor.respone.ResponeData;
+import com.project.tutor.respone.ResponeDataAuth;
+import com.project.tutor.respone.ResponseData;
 import com.project.tutor.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -18,7 +19,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/file")
 public class FileController {
-    public static ResponeData data  = new ResponeData();
+
+
+    public static ResponseData data = new ResponseData();
 
     @Autowired
     FileService fileService;

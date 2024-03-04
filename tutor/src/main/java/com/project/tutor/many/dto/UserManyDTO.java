@@ -1,5 +1,6 @@
 package com.project.tutor.many.dto;
 
+import com.project.tutor.dto.FeedBackDTO;
 import com.project.tutor.dto.RoleDTO;
 import com.project.tutor.dto.SubjectDTO;
 import lombok.AllArgsConstructor;
@@ -26,4 +27,5 @@ public class UserManyDTO {
     private boolean isActive;
     private LocalDateTime createAt;
     private List<RoleDTO> listRoleDTOs;
+    private List<FeedBackDTO> listFeedbackDTO;
 }
