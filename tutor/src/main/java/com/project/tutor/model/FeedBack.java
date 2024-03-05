@@ -27,13 +27,11 @@ public class FeedBack {
     @Column(name = "create_at")
     private LocalDateTime createAt;
 
-    @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.MERGE)
     @JoinColumn(name = "tutor_id")
-    @JsonIgnoreProperties("listFeedbacks")
     private Tutor tutor;
 
-    @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.MERGE)
     @JoinColumn(name = "user_id")
-    @JsonIgnoreProperties("listFeedbacks")
     private User user;
 }

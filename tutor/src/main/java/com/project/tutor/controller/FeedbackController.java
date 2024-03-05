@@ -32,4 +32,12 @@ public class FeedbackController {
         data.setMsg(checkAddFeedback  ? "Add feeback success" : "Add feedback fail!");
         return new ResponseEntity<>(data,HttpStatus.OK);
     }
+
+    @DeleteMapping("/delete/{feedbackId}")
+    public ResponseEntity<?> deleteFeedbackById (@PathVariable int feedbackId){
+        boolean checkDeleteFeedback = feedbackService.deleteFeedback(feedbackId);
+        data.setData(checkDeleteFeedback ? true : false);
+        data.setMsg(checkDeleteFeedback ? "Delete feedback sucess" : "Delete feedback fail!");
+        return new ResponseEntity<>(data,HttpStatus.OK);
+    }
 }

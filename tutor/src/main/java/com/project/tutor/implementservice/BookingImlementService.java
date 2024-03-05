@@ -23,6 +23,7 @@ import java.util.Map;
 @Service
 public class BookingImlementService implements BookingService {
 
+
     @Autowired
     TutorRepository tutorRepository;
 
@@ -31,6 +32,8 @@ public class BookingImlementService implements BookingService {
 
     @Autowired
     UserRepository userRepository;
+
+
 
    @Autowired
     CustomUserDetails customUserDetails;
@@ -63,6 +66,27 @@ public class BookingImlementService implements BookingService {
             return true;
         } catch (Exception e) {
             throw new BadCredentialsException("Booking failed!");
+        }
+    }
+
+    @Override
+    public boolean deleteBooking(int bookingId) {
+        try {
+
+            Booking checkBookingExistOrNot = bookingRepository.findById(bookingId)
+                    .orElseThrow(() -> new RuntimeException("Booking not found!"));
+
+            String username = SecurityContextHolder.getContext().getAuthentication().getName();
+            UserDetails userDetails = customUserDetails.loadUserByUsername(username);
+
+            if (userDetails == null) {
+                throw new BadCredentialsException("User not found");
+            }
+
+            bookingRepository.delete(checkBookingExistOrNot);
+            return true;
+        } catch (Exception e) {
+            throw new BadCredentialsException("Delete booking fail!");
         }
     }
 }

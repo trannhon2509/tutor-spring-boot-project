@@ -18,12 +18,12 @@ public class Booking {
     @Column(name = "booking_id" , unique = true , nullable = false)
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.MERGE)
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.MERGE)
     @JoinColumn(name = "tutor_id")
     private Tutor tutor;
 

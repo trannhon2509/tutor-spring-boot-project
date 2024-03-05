@@ -62,10 +62,10 @@ public class User {
     private List<UserRole> listUserRoles = new ArrayList<>();
 
 
-    @OneToMany(mappedBy = "user" , fetch = FetchType.LAZY, cascade =  CascadeType.ALL)
+    @OneToMany(mappedBy = "user" , fetch = FetchType.LAZY)
     private List<FeedBack> listFeedbacks = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user" , fetch = FetchType.LAZY, cascade =  CascadeType.ALL)
+    @OneToMany(mappedBy = "user" , fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Booking> listBooking = new ArrayList<>();
 

@@ -100,6 +100,7 @@ public class FeedBackImplementService implements FeedbackService {
     }
 
     // Check user booked tutor or not
+    @Override
     public boolean checkIfUserHasBooking(User user, Tutor tutor) {
         try {
             if (user != null && user.getListBooking() != null) {
@@ -116,26 +117,39 @@ public class FeedBackImplementService implements FeedbackService {
         return false;
     }
 
-
-
-
-    @Override
-    public boolean updateFeedback(int feedbackId, FeedBackRequest request) {
-        try {
-            return true;
-        } catch (Exception e) {
-            throw new BadCredentialsException("Add feedback fail!");
-        }
-
-    }
-
     @Override
     public boolean deleteFeedback(int feedbackId) {
-        return false;
+        try {
+           // FIND ID NEED DELETE
+            FeedBack checkFeedbackExistOrNot  = feedBackRepository.findById(feedbackId)
+                    .orElseThrow(()-> new RuntimeException("Feedback not found"));
+
+            // CHECK USER LOGIN OR NOT
+            String username = SecurityContextHolder.getContext().getAuthentication().getName();
+            UserDetails userDetails = customUserDetails.loadUserByUsername(username);
+
+            if(userDetails == null){
+                throw new BadCredentialsException("User not found");
+            }
+
+            User currentUser = userRepository.findByUsername(username);
+
+            // CHECK USER BOOKED TUTOR OR NOT
+            Tutor tutorToDelete = checkFeedbackExistOrNot.getTutor();
+            boolean checkUserIfBooked = checkIfUserHasBooking(currentUser,tutorToDelete);
+
+            if(!checkUserIfBooked){
+                throw new BadCredentialsException("User has not booked this tutor. Cannot delete feedback.");
+            }
+
+            //DELETE FEEDBACK
+            feedBackRepository.delete(checkFeedbackExistOrNot);
+
+            return true;
+
+        }catch (Exception e){
+            throw new BadCredentialsException("Can't delete feedback");
+        }
     }
 
-    @Override
-    public FeedBackDTO getFeedbackById(int feedbackId) {
-        return null;
-    }
 }
