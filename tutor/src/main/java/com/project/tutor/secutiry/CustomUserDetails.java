@@ -11,12 +11,15 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-@Service
+@Component
 public class CustomUserDetails implements UserDetailsService {
 
     @Autowired
@@ -34,15 +37,16 @@ public class CustomUserDetails implements UserDetailsService {
             throw new BadCredentialsException("Account don't acive : ");
         }
 
-//        Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-//        grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().getRoleName()));
-        return new org.springframework.security.core.userdetails.User(user.getUser().getUsername(), user.getUser().getPassword(), roleAuthorization(user.getRole().getListUserRoles()));
+        Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
+        grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().getRoleName()));
+        System.out.println("User roles : " + grantedAuthorities);
+        return new org.springframework.security.core.userdetails.User(user.getUser().getUsername(), user.getUser().getPassword(), grantedAuthorities);
     }
 
 
     public Collection<? extends GrantedAuthority> roleAuthorization(Collection<UserRole> roles) {
         return roles.stream().map(
-                role -> new SimpleGrantedAuthority(role.getRole().getRoleName())
+                role -> new SimpleGrantedAuthority("ROLE_" + role.getRole().getRoleName())
         ).collect(Collectors.toList());
     }
 }

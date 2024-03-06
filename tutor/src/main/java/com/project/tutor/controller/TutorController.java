@@ -22,7 +22,7 @@ public class TutorController {
     @Autowired
     FileService fileService;
 
-    @GetMapping
+    @GetMapping("/list")
     public ResponseEntity<?> getAllTutor() {
         return new ResponseEntity<>(tutorService.getAllTutor(), HttpStatus.OK);
     }

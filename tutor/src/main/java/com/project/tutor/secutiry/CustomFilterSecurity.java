@@ -1,25 +1,25 @@
 package com.project.tutor.secutiry;
 
 
-import com.project.tutor.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.context.annotation.Role;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -28,34 +28,61 @@ import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class CustomFilterSecurity {
 
     private JwtValidator jwtValidator;
+
     @Autowired
-    public void setJwtValidator (JwtValidator jwtValidator){
+    public void setJwtValidator(JwtValidator jwtValidator) {
         this.jwtValidator = jwtValidator;
     }
+
+    @Autowired
+    CustomUserDetails customUserDetails;
+
     @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider (UserDetailsService userService){
+    public AuthenticationProvider authenticationProvider() {
+
         DaoAuthenticationProvider dap = new DaoAuthenticationProvider();
-        dap.setUserDetailsService(userService);
+        dap.setUserDetailsService(customUserDetails);
         dap.setPasswordEncoder(passwordEncoder());
         return dap;
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).
-        authorizeHttpRequests(
-                authorize -> authorize.requestMatchers("/auth/**").permitAll()
-//                        .requestMatchers("/api/**").hasAuthority("ADMIN")
-//                        .requestMatchers("/booking/**").hasAuthority("USER")
-//                        .requestMatchers("/feedback/**").hasAuthority("USER")
-                        .requestMatchers("/api/booking/add","/api/feedback/add").hasAuthority("USER")
-                        .requestMatchers("/api/user/**").hasAuthority("ADMIN")
-                        .anyRequest().authenticated()).
-        addFilterBefore( jwtValidator, UsernamePasswordAuthenticationFilter.class).
-        csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(new CorsConfigurationSource() {
+        http.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider())
+
+                .addFilterBefore(jwtValidator, UsernamePasswordAuthenticationFilter.class)
+
+                .authorizeHttpRequests(
+                        authorize -> authorize
+                                .requestMatchers("/auth/**", "/api/tutor/add",
+                                                "/api/subject/list", "/api/tutor/list",
+                                                "/api/teaching/list").permitAll()
+
+                                .requestMatchers("/api/booking/**", "/api/feedback/**").hasAuthority("ROLE_USER")
+
+                                .requestMatchers(
+                                        // USER AND ROLE
+                                        "/api/user/**", "/api/role/**",
+                                        // SUBJECT
+                                        "/api/subject/add", "/api/subject/delete/*", "/api/subject/update/*",
+                                        // TUTOR
+                                        "/api/tutor/delete/*", "/api/tutor/delete/*", "/api/tutor/*",
+                                        // TEACHING
+                                        "/api/teaching/add","/api/teaching/delete/*","/api/teaching/*"
+
+                                        ).hasAuthority("ROLE_ADMIN")
+
+                                .requestMatchers("/api/subject/list", "/api/tutor/list"
+                                ).hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+
+
+                                .anyRequest().authenticated()).
+                csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(new CorsConfigurationSource() {
                     @Override
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                         CorsConfiguration cfg = new CorsConfiguration();
@@ -78,5 +105,10 @@ public class CustomFilterSecurity {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 }

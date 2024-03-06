@@ -17,7 +17,7 @@ public class SubjectController {
     @Autowired
     SubjectService subjectService;
 
-    @GetMapping
+    @GetMapping("/list")
     public ResponseEntity<?> getAllSubject (){
         return new ResponseEntity<>(subjectService.listSubject(), HttpStatus.OK);
     }
