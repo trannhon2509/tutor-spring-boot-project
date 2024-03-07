@@ -31,7 +31,7 @@ public class TeachingController {
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
 
-    @PostMapping("/delete/{teachingId}")
+    @DeleteMapping("/delete/{teachingId}")
     public ResponseEntity<?> deleteTeaching (@PathVariable int teachingId){
         boolean checkDeleteTeachingSuccess = teachingService.deleteTeaching(teachingId);
         data.setData(checkDeleteTeachingSuccess ? true : false);
@@ -39,11 +39,16 @@ public class TeachingController {
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
 
-    @PostMapping("/update/{teachingId}")
+    @PutMapping("/update/{teachingId}")
     public ResponseEntity<?> updateTeaching (@PathVariable int teachingId , @RequestBody TeachingRequest request ){
-        boolean checkUpdateTeachingSuccess = teachingService.deleteTeaching(teachingId);
+        boolean checkUpdateTeachingSuccess = teachingService.updateTeaching(teachingId,request);
         data.setData(checkUpdateTeachingSuccess ? true : false);
         data.setMsg(checkUpdateTeachingSuccess ? "Update teaching success" : "Update teaching fail!");
         return new ResponseEntity<>(data, HttpStatus.OK);
+    }
+
+    @GetMapping("/{teachingId}")
+    public ResponseEntity<?> getTeachingById (@PathVariable int teachingId){
+        return new ResponseEntity<>(teachingService.getTeachingById(teachingId) , HttpStatus.OK);
     }
 }

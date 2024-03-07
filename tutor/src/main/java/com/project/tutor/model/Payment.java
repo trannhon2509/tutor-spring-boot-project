@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.swing.*;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -20,8 +21,8 @@ public class Payment {
     @Column(name ="payment_name")
     private String paymentName;
 
-    @Column(name ="description")
-    private String description;
+    @Column(name = "create_at")
+    private LocalDateTime createAt;
 
     @Column(name ="payment_price")
     private double paymentPrice;

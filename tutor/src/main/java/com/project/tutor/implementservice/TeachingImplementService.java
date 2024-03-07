@@ -106,8 +106,11 @@ public class TeachingImplementService implements TeachingService {
                 Teaching teaching = checkTeachingExistOrnot.get();
 
                 TeachingDTO teachingDTO = new TeachingDTO();
+
+                teachingDTO.setTeachingId(teaching.getId());
                 teachingDTO.setTeachingName(teaching.getTeachingName());
-                teaching.setSchedule(teaching.getSchedule());
+                teachingDTO.setSchedule(teaching.getSchedule());
+
                 return teachingDTO;
             }
         } catch (Exception e) {

@@ -71,10 +71,11 @@ public class CustomFilterSecurity {
                                         // SUBJECT
                                         "/api/subject/add", "/api/subject/delete/*", "/api/subject/update/*",
                                         // TUTOR
-                                        "/api/tutor/delete/*", "/api/tutor/delete/*", "/api/tutor/*",
+                                        "/api/tutor/delete/*", "/api/tutor/update/*", "/api/tutor/*",
                                         // TEACHING
-                                        "/api/teaching/add","/api/teaching/delete/*","/api/teaching/*"
-
+                                        "/api/teaching/add","/api/teaching/delete/*","/api/teaching/update/*","/api/teaching/*",
+                                        // PAYMENT
+                                        "/api/payment/list","/api/payment/add","/api/payment/delete/*","/api/payment/update/*"
                                         ).hasAuthority("ROLE_ADMIN")
 
                                 .requestMatchers("/api/subject/list", "/api/tutor/list"
