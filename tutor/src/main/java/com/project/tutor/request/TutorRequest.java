@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TutorRequest {
+    private int tutorId;
     private String cityTeach;
     private String fullName;
     private String gender;

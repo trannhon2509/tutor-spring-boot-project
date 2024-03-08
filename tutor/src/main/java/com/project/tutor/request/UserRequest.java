@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 public class UserRequest {
+   private int userId;
    private String username;
    private  String password;
    private String passwordRepeat;
@@ -30,11 +31,5 @@ public class UserRequest {
    private List<Tutor> listTutors;
    private List<FeedBack> listFeedbacks;
 
-   public boolean isActive() {
-      return isActive;
-   }
 
-   public void setActive(boolean active) {
-      isActive = active;
-   }
 }

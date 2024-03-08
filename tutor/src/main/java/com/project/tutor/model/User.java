@@ -68,6 +68,4 @@ public class User {
     @OneToMany(mappedBy = "user" , fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Booking> listBooking = new ArrayList<>();
-
-
 }

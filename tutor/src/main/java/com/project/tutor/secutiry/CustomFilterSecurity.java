@@ -60,10 +60,10 @@ public class CustomFilterSecurity {
                 .authorizeHttpRequests(
                         authorize -> authorize
                                 .requestMatchers("/auth/**", "/api/tutor/add",
-                                                "/api/subject/list", "/api/tutor/list",
-                                                "/api/teaching/list").permitAll()
+                                        "/api/subject/list", "/api/tutor/list",
+                                        "/api/teaching/list").permitAll()
 
-                                .requestMatchers("/api/booking/**", "/api/feedback/**").hasAuthority("ROLE_USER")
+                                .requestMatchers("/api/booking/add", "/api/feedback/**").hasAuthority("ROLE_USER")
 
                                 .requestMatchers(
                                         // USER AND ROLE
@@ -73,10 +73,12 @@ public class CustomFilterSecurity {
                                         // TUTOR
                                         "/api/tutor/delete/*", "/api/tutor/update/*", "/api/tutor/*",
                                         // TEACHING
-                                        "/api/teaching/add","/api/teaching/delete/*","/api/teaching/update/*","/api/teaching/*",
+                                        "/api/teaching/add", "/api/teaching/delete/*", "/api/teaching/update/*", "/api/teaching/*",
                                         // PAYMENT
-                                        "/api/payment/list","/api/payment/add","/api/payment/delete/*","/api/payment/update/*"
-                                        ).hasAuthority("ROLE_ADMIN")
+                                        "/api/payment/list", "/api/payment/add", "/api/payment/delete/*", "/api/payment/update/*",
+                                        //BOOKING
+                                        "/api/booking/list", "/api/booking/delete/*","/api/booking/update/*"
+                                ).hasAuthority("ROLE_ADMIN")
 
                                 .requestMatchers("/api/subject/list", "/api/tutor/list"
                                 ).hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")

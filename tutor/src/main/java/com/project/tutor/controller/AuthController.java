@@ -47,7 +47,7 @@ public class AuthController {
 
     }
 
-    @PostMapping("/reset-password")
+    @GetMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@RequestParam String email, @RequestBody UserRequest request) {
         boolean checkResetPassword = userService.resetPassword(email, request);
 
