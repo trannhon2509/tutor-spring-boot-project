@@ -71,7 +71,7 @@ public class CustomFilterSecurity {
                                         // SUBJECT
                                         "/api/subject/add", "/api/subject/delete/*", "/api/subject/update/*",
                                         // TUTOR
-                                        "/api/tutor/delete/*", "/api/tutor/update/*", "/api/tutor/*",
+                                        "/api/tutor/delete/*", "/api/tutor/update/*", "/api/tutor/*","/api/tutor/list/approved",
                                         // TEACHING
                                         "/api/teaching/add", "/api/teaching/delete/*", "/api/teaching/update/*", "/api/teaching/*",
                                         // PAYMENT
@@ -80,7 +80,7 @@ public class CustomFilterSecurity {
                                         "/api/booking/list", "/api/booking/delete/*","/api/booking/update/*"
                                 ).hasAuthority("ROLE_ADMIN")
 
-                                .requestMatchers("/api/subject/list", "/api/tutor/list"
+                                .requestMatchers("/api/subject/list", "/api/tutor/list","/api/booking/*"
                                 ).hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
 
 

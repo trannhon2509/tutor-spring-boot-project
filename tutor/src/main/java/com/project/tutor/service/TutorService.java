@@ -14,7 +14,6 @@ import java.util.List;
 public interface TutorService {
     public List<TutorManyDTO> getAllTutor();
 
-
     public TutorRequest addTutor(MultipartFile[] file , TutorRequest request);
 
     public boolean deleteTutorById(int tutorId);
@@ -22,5 +21,9 @@ public interface TutorService {
     public boolean updateTutor(MultipartFile[] file ,int tutorId, TutorRequest request);
 
     public TutorManyDTO getTutorById(int tutorId);
+
+    public List<TutorManyDTO> getListTutorApprovedFalse();
+
+    public boolean approveTutor (int tutorId);
 }
 

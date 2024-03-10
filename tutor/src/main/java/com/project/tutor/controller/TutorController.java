@@ -9,6 +9,7 @@ import com.project.tutor.service.TutorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,6 +27,12 @@ public class TutorController {
     public ResponseEntity<?> getAllTutor() {
         return new ResponseEntity<>(tutorService.getAllTutor(), HttpStatus.OK);
     }
+
+    @GetMapping("/list/approved")
+    public ResponseEntity<?> getAllListApprovedTutor (){
+        return new ResponseEntity<>(tutorService.getListTutorApprovedFalse() , HttpStatus.OK);
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getTutorById(@PathVariable int id) {
@@ -65,5 +72,19 @@ public class TutorController {
         data.setMsg(checkUpdate ? "Update tutor success" : "Update tutor fail!");
 
         return new ResponseEntity<>(data, HttpStatus.OK);
+    }
+
+    @GetMapping("/approve/{tutorId}")
+    public ResponseEntity<?> approveTutor (@PathVariable int tutorId){
+        try {
+            boolean checkApproveTutor = tutorService.approveTutor(tutorId);
+            data.setData(checkApproveTutor);
+            data.setMsg(checkApproveTutor ? "Approved tutor success" : "Approved tutor fail!");
+            return new ResponseEntity<>(data, HttpStatus.OK);
+        } catch (BadCredentialsException e) {
+            data.setData(false);
+            data.setMsg(e.getMessage());
+            return new ResponseEntity<>(data, HttpStatus.UNAUTHORIZED);
+        }
     }
 }

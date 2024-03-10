@@ -18,6 +18,7 @@ import com.project.tutor.request.TutorRequest;
 import com.project.tutor.service.FileService;
 import com.project.tutor.service.TutorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,6 +33,60 @@ import java.util.stream.Collectors;
 public class TutorServiceImplement implements TutorService {
     @Autowired
     TutorRepository tutorRepository;
+
+    @Override
+    public List<TutorManyDTO> getListTutorApprovedFalse() {
+        List<Tutor> listTutors = tutorRepository.findByApprovedFalse();
+        List<TutorManyDTO> listTutorDTO = new ArrayList<>();
+
+        for (Tutor tutor : listTutors) {
+            TutorManyDTO tutorManyDTO = new TutorManyDTO();
+            tutorManyDTO.setId(tutor.getId());
+            tutorManyDTO.setCityTech(tutor.getCityTeach());
+            tutorManyDTO.setFullName(tutor.getFullName());
+            tutorManyDTO.setGender(tutor.getGender());
+            tutorManyDTO.setDateOfBirth(tutor.getDateOfBirth());
+            tutorManyDTO.setAddress(tutor.getAddress());
+            tutorManyDTO.setPhoneNumber(tutor.getPhoneNumber());
+            tutorManyDTO.setEmail(tutor.getEmail());
+            tutorManyDTO.setVoice(tutor.getVoice());
+            tutorManyDTO.setMajor(tutor.getMajor());
+            tutorManyDTO.setEcademicLevel(tutor.getEcademicLevel());
+            tutorManyDTO.setDescription(tutor.getDescription());
+            tutorManyDTO.setCitizenIdentificationCard(tutor.getCitizenIdentificationCard());
+            tutorManyDTO.setIssued(tutor.getIssued());
+            tutorManyDTO.setCitizenIdentificationCardFront(tutor.getCitizenIdentificationCardFront());
+            tutorManyDTO.setCitizenIdentificationCardFrontBackside(tutor.getCitizenIdentificationCardFrontBackside());
+            tutorManyDTO.setCardPhoto(tutor.getCardPhoto());
+            tutorManyDTO.setSchoolTeachOrStudent(tutor.getSchoolTeachOrStudent());
+            tutorManyDTO.setNumberTeachOfWeak(tutor.getNumberTeachOfWeek());
+            tutorManyDTO.setSalaryRequest(tutor.getSalaryRequest());
+            tutorManyDTO.setCreateAt(tutor.getCreateAt());
+            tutorManyDTO.setApproved(tutor.isApproved());
+
+            listTutorDTO.add(tutorManyDTO);
+        }
+        return listTutorDTO;
+    }
+
+    @Override
+    public boolean approveTutor(int tutorId) {
+
+            Optional<Tutor> checkTutorExistOrNot = tutorRepository.findById(tutorId);
+            if (checkTutorExistOrNot.isPresent()) {
+                Tutor tutor = checkTutorExistOrNot.get();
+
+                if (tutor.isApproved()) {
+                    throw new BadCredentialsException("Tutor is approved");
+                } else {
+                    tutor.setApproved(true);
+                    tutorRepository.save(tutor);
+                }
+                return true;
+            }
+
+        return false;
+    }
 
     @Autowired
     SubjectRepository subjectRepository;
@@ -72,6 +127,7 @@ public class TutorServiceImplement implements TutorService {
             tutorManyDTO.setNumberTeachOfWeak(tutor.getNumberTeachOfWeek());
             tutorManyDTO.setSalaryRequest(tutor.getSalaryRequest());
             tutorManyDTO.setCreateAt(tutor.getCreateAt());
+            tutorManyDTO.setApproved(tutor.isApproved());
 
             List<TutorSubject> listTutorSubject = tutor.getListTutorSubject();
             List<Teaching> listTeachings = tutor.getListTeachings();
@@ -92,15 +148,15 @@ public class TutorServiceImplement implements TutorService {
 
                 listSubjectDTOs.add(subjectDTO);
             }
-            for (Teaching teaching : listTeachings){
-                TeachingDTO teachingDTO   = new TeachingDTO();
+            for (Teaching teaching : listTeachings) {
+                TeachingDTO teachingDTO = new TeachingDTO();
                 teachingDTO.setTeachingId(teaching.getId());
                 teachingDTO.setTeachingName(teaching.getTeachingName());
                 teachingDTO.setSchedule(teaching.getSchedule());
                 listTeachingDTO.add(teachingDTO);
             }
 
-            for (FeedBack feedBack : listFeedback){
+            for (FeedBack feedBack : listFeedback) {
                 FeedBackDTO feedBackDTO = new FeedBackDTO();
                 feedBackDTO.setFeedbackId(feedBack.getId());
                 feedBackDTO.setContent(feedBack.getContent());
@@ -203,7 +259,6 @@ public class TutorServiceImplement implements TutorService {
         }
         return null;
     }
-
 
     @Override
     public boolean deleteTutorById(int tutorId) {

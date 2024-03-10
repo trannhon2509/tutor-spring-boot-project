@@ -16,6 +16,6 @@ public interface BookingService {
 
     public List<BookingDTO> getAllListBooking ();
 
-    public BookingDTO getBookingById ();
+    public BookingDTO getBookingById (int bookingId);
 
 }

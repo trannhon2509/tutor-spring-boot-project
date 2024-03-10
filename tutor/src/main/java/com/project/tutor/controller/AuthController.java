@@ -2,6 +2,8 @@ package com.project.tutor.controller;
 
 import com.project.tutor.request.UserRequest;
 import com.project.tutor.respone.ResponeDataAuth;
+import com.project.tutor.respone.ResponseData;
+import com.project.tutor.service.TutorService;
 import com.project.tutor.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +16,9 @@ public class AuthController {
     public static ResponeDataAuth data = new ResponeDataAuth();
     @Autowired
     UserService userService;
+
+    @Autowired
+    TutorService tutorService;
 
     @PostMapping("/signup")
     public ResponseEntity<?> singup(@RequestBody UserRequest request) {
@@ -55,4 +60,6 @@ public class AuthController {
         data.setMsg(checkResetPassword ? "Send email reset password success" : "Send email reset password fail!");
         return new ResponseEntity<>(data,HttpStatus.OK);
     }
+
+
 }

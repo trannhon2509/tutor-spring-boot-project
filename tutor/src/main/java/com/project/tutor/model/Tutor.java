@@ -80,6 +80,11 @@ public class Tutor {
     @Column(name ="create_at")
     private LocalDateTime createAt;
 
+    @Column(name = "approved")
+    private boolean approved;
+
+
+
     @OneToMany(mappedBy = "tutor" ,fetch = FetchType.LAZY , cascade =  CascadeType.ALL)
     private List<TutorSubject> listTutorSubject = new ArrayList<>();
 

@@ -137,9 +137,66 @@ public class BookingImlementService implements BookingService {
     }
 
     @Override
-    public BookingDTO getBookingById() {
+    public BookingDTO getBookingById(int bookingId) {
+        try {
+            Optional<Booking> checkBookingExistOrNot = bookingRepository.findById(bookingId);
+
+            if (checkBookingExistOrNot.isPresent()) {
+                Booking booking = checkBookingExistOrNot.get();
+
+                BookingDTO bookingDTO = new BookingDTO();
+                bookingDTO.setBookingId(booking.getId());
+
+                User user = booking.getUser();
+                UserDTO userDTO = new UserDTO();
+                userDTO.setUserId(user.getId());
+                userDTO.setUsername(user.getUsername());
+                userDTO.setPassword(user.getPassword());
+                userDTO.setEmail(user.getEmail());
+                userDTO.setFirstName(user.getFirstName());
+                userDTO.setLastName(user.getLastName());
+                userDTO.setAddress(user.getAddress());
+                userDTO.setPhoneNumber(user.getPhoneNumber());
+                userDTO.setActive(user.isActive());
+                userDTO.setCreateAt(user.getCreatAt());
+
+                bookingDTO.setUserDTO(userDTO);
+
+                // Set TutorDTO information
+                Tutor tutor = booking.getTutor();
+                TutorDTO tutorDTO = new TutorDTO();
+                tutorDTO.setId(tutor.getId());
+                tutorDTO.setCityTech(tutor.getCityTeach());
+                tutorDTO.setFullName(tutor.getFullName());
+                tutorDTO.setGender(tutor.getGender());
+                tutorDTO.setDateOfBirth(tutor.getDateOfBirth());
+                tutorDTO.setAddress(tutor.getAddress());
+                tutorDTO.setPhoneNumber(tutor.getPhoneNumber());
+                tutorDTO.setEmail(tutor.getEmail());
+                tutorDTO.setVoice(tutor.getVoice());
+                tutorDTO.setMajor(tutor.getMajor());
+                tutorDTO.setEcademicLevel(tutor.getEcademicLevel());
+                tutorDTO.setDescription(tutor.getDescription());
+                tutorDTO.setCitizenIdentificationCard(tutor.getCitizenIdentificationCard());
+                tutorDTO.setIssued(tutor.getIssued());
+                tutorDTO.setCitizenIdentificationCardFront(tutor.getCitizenIdentificationCardFront());
+                tutorDTO.setCitizenIdentificationCardFrontBackside(tutor.getCitizenIdentificationCardFrontBackside());
+                tutorDTO.setCardPhoto(tutor.getCardPhoto());
+                tutorDTO.setSchoolTeachOrStudent(tutor.getSchoolTeachOrStudent());
+                tutorDTO.setNumberTeachOfWeak(tutor.getNumberTeachOfWeek());
+                tutorDTO.setSalaryRequest(tutor.getSalaryRequest());
+                tutorDTO.setCreateAt(tutor.getCreateAt());
+
+                bookingDTO.setTutorDTO(tutorDTO);
+
+                return bookingDTO;
+            }
+        } catch (Exception e) {
+            throw new BadCredentialsException("Update booking fail!");
+        }
         return null;
     }
+
 
     @Override
     public boolean addBooking(List<Map<String, Integer>> listTutorMaps) {

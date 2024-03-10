@@ -37,6 +37,7 @@ public class TutorManyDTO {
     private int numberTeachOfWeak;
     private double  salaryRequest;
     private LocalDateTime createAt;
+    private boolean approved;
     private List<SubjectDTO> listSubjectDTO;
     private List<TeachingDTO> listTeachingDTO;
     private List<FeedBackDTO> listFeedbackDTO;

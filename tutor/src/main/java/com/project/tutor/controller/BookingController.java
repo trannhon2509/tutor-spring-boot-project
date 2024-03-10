@@ -1,5 +1,6 @@
 package com.project.tutor.controller;
 
+import com.project.tutor.dto.BookingDTO;
 import com.project.tutor.request.BookingRequest;
 import com.project.tutor.respone.ResponeDataAuth;
 import com.project.tutor.respone.ResponseData;
@@ -52,4 +53,9 @@ public class BookingController {
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
 
+    @GetMapping("/{bookingId}")
+    public ResponseEntity<?> getBookingById (@PathVariable int bookingId){
+        BookingDTO bookingDTO = bookingService.getBookingById(bookingId);
+        return new ResponseEntity<>(bookingDTO , HttpStatus.OK);
+    }
 }
