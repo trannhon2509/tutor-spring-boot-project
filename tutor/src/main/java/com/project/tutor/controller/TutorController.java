@@ -24,13 +24,18 @@ public class TutorController {
     FileService fileService;
 
     @GetMapping("/list")
-    public ResponseEntity<?> getAllTutor() {
-        return new ResponseEntity<>(tutorService.getAllTutor(), HttpStatus.OK);
+    public ResponseEntity<?> getAllTutor(@RequestParam int page , @RequestParam int record) {
+        return new ResponseEntity<>(tutorService.getAllTutor(page,record), HttpStatus.OK);
     }
 
     @GetMapping("/list/approved")
     public ResponseEntity<?> getAllListApprovedTutor (){
         return new ResponseEntity<>(tutorService.getListTutorApprovedFalse() , HttpStatus.OK);
+    }
+
+    @GetMapping("/search-and-sort")
+    public ResponseEntity<?> getAllTutorAndSearchAndSort (@RequestParam String title , @RequestParam int page , @RequestParam int record){
+        return new ResponseEntity<>(tutorService.getAllTutorSearchAndPagingAndSort(title,page,record),HttpStatus.OK);
     }
 
 

@@ -12,7 +12,9 @@ import java.util.List;
 
 @Service
 public interface TutorService {
-    public List<TutorManyDTO> getAllTutor();
+    public List<TutorManyDTO> getAllTutor(int page , int record);
+
+    public List<TutorManyDTO> getAllTutorSearchAndPagingAndSort (String title , int page , int record);
 
     public TutorRequest addTutor(MultipartFile[] file , TutorRequest request);
 

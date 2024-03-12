@@ -1,5 +1,6 @@
 package com.project.tutor.implementservice;
 
+import com.project.tutor.access.PagingSearchAndSorting;
 import com.project.tutor.dto.RoleDTO;
 import com.project.tutor.dto.UserDTO;
 import com.project.tutor.many.dto.RoleManyDTO;
@@ -31,9 +32,44 @@ public class RoleImplementService implements RoleService {
     @Autowired
     UserRoleRepository userRoleRepository;
 
+    @Autowired
+    PagingSearchAndSorting pagingSearchAndSorting;
+
     @Override
-    public List<RoleManyDTO> getAllRole() {
-        List<Role> listRoles = roleRepository.findAll();
+    public List<RoleManyDTO> getAllRole(int page , int record) {
+        List<Role> listRoles = roleRepository.findAll(pagingSearchAndSorting.pageablePageSizeAndRecordOrSearchOrSort(page,record)).get().toList();
+        List<RoleManyDTO> listRoleManyDTO = new ArrayList<>();
+        for (Role role : listRoles) {
+            RoleManyDTO roleMany = new RoleManyDTO();
+            roleMany.setId(role.getId());
+            roleMany.setRoleName(role.getRoleName());
+            roleMany.setCreateAt(role.getCreateAt());
+            List<UserRole> listUserRoles = role.getListUserRoles();
+
+            List<UserDTO> listUserDTO = new ArrayList<>();
+            for (UserRole userRole : listUserRoles) {
+                UserDTO userDTO = new UserDTO();
+                userDTO.setUserId(userRole.getUser().getId());
+                userDTO.setUsername(userRole.getUser().getUsername());
+                userDTO.setPassword(userRole.getUser().getPassword());
+                userDTO.setEmail(userRole.getUser().getEmail());
+                userDTO.setFirstName(userRole.getUser().getFirstName());
+                userDTO.setLastName(userRole.getUser().getLastName());
+                userDTO.setAddress(userRole.getUser().getAddress());
+                userDTO.setPhoneNumber(userRole.getUser().getPhoneNumber());
+                userDTO.setCreateAt(userRole.getUser().getCreatAt());
+
+                listUserDTO.add(userDTO);
+            }
+            roleMany.setListUserDTO(listUserDTO);
+            listRoleManyDTO.add(roleMany);
+        }
+        return listRoleManyDTO;
+    }
+
+    @Override
+    public List<RoleManyDTO> getAllRoleSearchAndPagingAndSort(String title, int page, int record) {
+        List<Role> listRoles = roleRepository.findByRoleNameContaining(title, pagingSearchAndSorting.pageablePageSizeAndRecordOrSearchOrSort(page,record));
         List<RoleManyDTO> listRoleManyDTO = new ArrayList<>();
         for (Role role : listRoles) {
             RoleManyDTO roleMany = new RoleManyDTO();

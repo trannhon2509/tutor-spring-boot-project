@@ -1,11 +1,13 @@
 package com.project.tutor.controller;
 
+import com.project.tutor.dto.SubjectDTO;
 import com.project.tutor.many.dto.SubjectManyDTO;
 import com.project.tutor.request.SubjectRequest;
 import com.project.tutor.respone.ResponeDataAuth;
 import com.project.tutor.respone.ResponseData;
 import com.project.tutor.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +20,13 @@ public class SubjectController {
     SubjectService subjectService;
 
     @GetMapping("/list")
-    public ResponseEntity<?> getAllSubject (){
-        return new ResponseEntity<>(subjectService.listSubject(), HttpStatus.OK);
+    public ResponseEntity<?> getAllSubject (@RequestParam int page , @RequestParam int record){
+        return new ResponseEntity<>(subjectService.listSubject(page , record), HttpStatus.OK);
+    }
+
+    @GetMapping("/search-and-sort")
+    public ResponseEntity<?> pagingAndSearchSubject (@RequestParam (required = false) String subjectName , @RequestParam int page , @RequestParam int record){
+        return new ResponseEntity<>(subjectService.findAllSubjectByName(subjectName,page , record), HttpStatus.OK);
     }
     @GetMapping("/{id}")
     public ResponseEntity<?> getSubjectById (@PathVariable int id){
@@ -54,5 +61,11 @@ public class SubjectController {
         data.setData(checkUpdateSuccess ? true : false);
         data.setMsg(checkUpdateSuccess ? "Update subject successfully" : "Update subject fail!");
         return new ResponseEntity<>(data,HttpStatus.OK);
+    }
+
+    @GetMapping("/paging")
+    public ResponseEntity<?> pagingSubject (@RequestParam (required = false) String subjectName , @RequestParam int page , @RequestParam int size){
+        Page subjectDTO = subjectService.getSubjectAndPaging(subjectName , page , size);
+        return new ResponseEntity<>(subjectDTO , HttpStatus.OK);
     }
 }

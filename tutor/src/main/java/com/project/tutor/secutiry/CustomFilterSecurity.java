@@ -54,17 +54,19 @@ public class CustomFilterSecurity {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
-
                 .addFilterBefore(jwtValidator, UsernamePasswordAuthenticationFilter.class)
-
                 .authorizeHttpRequests(
                         authorize -> authorize
-                                .requestMatchers("/auth/**", "/api/tutor/add",
-                                        "/api/subject/list", "/api/tutor/list",
+                                .requestMatchers(
+                                        // AUTH
+                                        "/auth/**",
+                                        // TUTOR
+                                        "/api/tutor/add","/api/tutor/list","/api/tutor/search-and-sort",
+                                        //SUBJECT
+                                        "/api/subject/list","/api/subject/search-and-sort",
+                                        // TEACHING
                                         "/api/teaching/list").permitAll()
-
                                 .requestMatchers("/api/booking/add", "/api/feedback/**").hasAuthority("ROLE_USER")
-
                                 .requestMatchers(
                                         // USER AND ROLE
                                         "/api/user/**", "/api/role/**",
@@ -82,8 +84,6 @@ public class CustomFilterSecurity {
 
                                 .requestMatchers("/api/subject/list", "/api/tutor/list","/api/booking/*"
                                 ).hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
-
-
                                 .anyRequest().authenticated()).
                 csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(new CorsConfigurationSource() {
                     @Override

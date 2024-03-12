@@ -1,8 +1,8 @@
 package com.project.tutor.implementservice;
 
+import com.project.tutor.access.PagingSearchAndSorting;
 import com.project.tutor.dto.FeedBackDTO;
 import com.project.tutor.dto.RoleDTO;
-import com.project.tutor.many.dto.LearningManyDTO;
 import com.project.tutor.many.dto.UserManyDTO;
 import com.project.tutor.mapper.UserRole;
 import com.project.tutor.model.FeedBack;
@@ -19,7 +19,6 @@ import com.project.tutor.secutiry.JwtProvider;
 import com.project.tutor.service.EmailService;
 import com.project.tutor.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -39,31 +38,33 @@ import java.util.stream.Collectors;
 @Transactional(rollbackFor = Exception.class)
 public class UserImplementService implements UserService {
     public final static ResponeDataAuth data = new ResponeDataAuth();
-    private UserRepository userRepository;
-    private RoleRepository roleRepository;
-    private PasswordEncoder passwordEncoder;
-    private JwtProvider jwtProvider;
-    private UserRoleRepository userRoleRepository;
-    private EmailService emailService;
 
-    private CustomUserDetails customUserDetails;
-
-    private FeedBackRepository feedBackRepository;
+   @Autowired
+    UserRepository userRepository;
 
     @Autowired
-    public UserImplementService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder,
-                                @Lazy JwtProvider jwtProvider, UserRoleRepository userRoleRepository, EmailService emailService,
-                                CustomUserDetails customUserDetails, FeedBackRepository feedBackRepository
-    ) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtProvider = jwtProvider;
-        this.userRoleRepository = userRoleRepository;
-        this.emailService = emailService;
-        this.customUserDetails = customUserDetails;
-        this.feedBackRepository = feedBackRepository;
-    }
+    RoleRepository roleRepository;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
+    @Autowired
+    JwtProvider jwtProvider;
+
+    @Autowired
+    UserRoleRepository userRoleRepository;
+
+    @Autowired
+    EmailService emailService;
+
+    @Autowired
+    CustomUserDetails customUserDetails;
+
+    @Autowired
+    FeedBackRepository feedBackRepository;
+
+    @Autowired
+    PagingSearchAndSorting pagingSearchAndSorting;
 
     @Override
     @Transactional
@@ -184,18 +185,6 @@ public class UserImplementService implements UserService {
         } catch (Exception e) {
             throw new RuntimeException("Send mail reset password fail!" + e.getMessage());
         }
-    }
-
-    @Override
-    public List<LearningManyDTO> getAllListLearning() {
-        List<User> listUser = userRepository.findAll();
-        List<LearningManyDTO> listLearningMany = new ArrayList<>();
-
-        for (User user : listUser) {
-            LearningManyDTO learningMany = new LearningManyDTO();
-
-        }
-        return null;
     }
 
     public Authentication authentication(String username, String password) {
@@ -353,6 +342,56 @@ public class UserImplementService implements UserService {
     }
 
     @Override
+    public List<UserManyDTO> getAllUser(int page, int record) {
+        List<User> listUser = userRepository.findAll(pagingSearchAndSorting.pageablePageSizeAndRecordOrSearchOrSort(page , record)).get().toList();
+        List<UserManyDTO> userDTOList = new ArrayList<>();
+
+        for (User user : listUser) {
+            UserManyDTO userMany = new UserManyDTO();
+
+            userMany.setUserId(user.getId());
+            userMany.setUsername(user.getUsername());
+            userMany.setPassword(user.getPassword());
+            userMany.setEmail(user.getEmail());
+            userMany.setFirstName(user.getFirstName());
+            userMany.setLastName(user.getLastName());
+            userMany.setAddress(user.getAddress());
+            userMany.setPhoneNumber(user.getPhoneNumber());
+            userMany.setActive(user.isActive());
+            userMany.setCreateAt(user.getCreatAt());
+
+            List<UserRole> userRoleList = userRoleRepository.findByUserId(user.getId());
+            List<FeedBack> listFeedbacks = user.getListFeedbacks();
+
+            List<RoleDTO> listRoleDto = new ArrayList<>();
+            List<FeedBackDTO> listFeedbackDTO = new ArrayList<>();
+
+            for (UserRole userRole : userRoleList) {
+                RoleDTO roleDTO = new RoleDTO();
+                roleDTO.setId(userRole.getRole().getId());
+                roleDTO.setRoleName(userRole.getRole().getRoleName());
+                roleDTO.setCreateAt(userRole.getRole().getCreateAt());
+
+                listRoleDto.add(roleDTO);
+            }
+            for (FeedBack feedBack : listFeedbacks) {
+                FeedBackDTO feedBackDTO = new FeedBackDTO();
+                feedBackDTO.setFeedbackId(feedBack.getId());
+                feedBackDTO.setRating(feedBack.getRating());
+                feedBackDTO.setContent(feedBack.getContent());
+                feedBackDTO.setCreateAt(feedBack.getCreateAt());
+
+                listFeedbackDTO.add(feedBackDTO);
+            }
+            userMany.setListRoleDTOs(listRoleDto);
+            userMany.setListFeedbackDTO(listFeedbackDTO);
+            userDTOList.add(userMany);
+        }
+
+        return userDTOList;
+    }
+
+    @Override
     public boolean activeAccount(String email, String activeCode) {
         try {
             User user = userRepository.findByEmail(email);
@@ -389,8 +428,8 @@ public class UserImplementService implements UserService {
     }
 
     @Override
-    public List<UserManyDTO> getAllUser() {
-        List<User> listUser = userRepository.findAll();
+    public List<UserManyDTO> getAlllistUserAndSearching(String title, int page, int record) {
+        List<User> listUser = userRepository.findByUsernameContaining(title ,pagingSearchAndSorting.pageablePageSizeAndRecordOrSearchOrSort(page,record));
         List<UserManyDTO> userDTOList = new ArrayList<>();
 
         for (User user : listUser) {
@@ -439,6 +478,11 @@ public class UserImplementService implements UserService {
     }
 
 }
+
+
+
+
+
 
 
 

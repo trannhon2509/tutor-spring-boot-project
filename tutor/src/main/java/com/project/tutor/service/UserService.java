@@ -15,14 +15,15 @@ public interface UserService {
     public ResponeDataAuth signin (UserRequest request);
     public UserManyDTO findUserById (int userId);
     public User findUserProfileByJwt (String jwt);
-    public List<UserManyDTO> getAllUser ();
+    public List<UserManyDTO> getAllUser (int page , int record);
+
     public boolean deleteUserById (int userId);
     public boolean updateUser (int userId, UserRequest request);
-
+    public List<UserManyDTO> getAlllistUserAndSearching(String title, int page, int record);
     public boolean activeAccount (String email , String activeCode);
 
     public boolean forgotPassword (String email);
     public boolean resetPassword (String email , UserRequest request);
 
-    public List<LearningManyDTO> getAllListLearning ();
+
 }

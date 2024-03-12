@@ -18,9 +18,14 @@ public class RoleController {
     @Autowired
     RoleService roleService;
 
-    @GetMapping
-    private ResponseEntity<?> getAllRole (){
-        return new ResponseEntity<>(roleService.getAllRole(), HttpStatus.OK);
+    @GetMapping("/list")
+    private ResponseEntity<?> getAllRole (@RequestParam int page , @RequestParam int record){
+        return new ResponseEntity<>(roleService.getAllRole(page,record), HttpStatus.OK);
+    }
+
+    @GetMapping("/search-and-sort")
+    private ResponseEntity<?> getAllRole (@RequestParam String title ,@RequestParam int page , @RequestParam int record){
+        return new ResponseEntity<>(roleService.getAllRoleSearchAndPagingAndSort(title,page,record), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

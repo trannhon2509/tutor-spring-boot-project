@@ -18,8 +18,13 @@ public class UserController {
     UserService userService;
 
     @GetMapping("/list")
-    public ResponseEntity<?> getAllUser() {
-        return new ResponseEntity<>(userService.getAllUser(), HttpStatus.OK);
+    public ResponseEntity<?> getAllUser(@RequestParam int page  , @RequestParam int record) {
+        return new ResponseEntity<>(userService.getAllUser(page , record), HttpStatus.OK);
+    }
+
+    @GetMapping("/search-and-sort")
+    public ResponseEntity<?> getAllUserSearchAndSort (@RequestParam String title , @RequestParam int page , @RequestParam int record){
+        return new ResponseEntity<>(userService.getAlllistUserAndSearching(title,page , record), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

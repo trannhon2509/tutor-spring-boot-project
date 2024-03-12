@@ -1,5 +1,7 @@
 package com.project.tutor.implementservice;
 
+import com.project.tutor.access.PagingSearchAndSorting;
+import com.project.tutor.dto.SubjectDTO;
 import com.project.tutor.dto.TutorDTO;
 import com.project.tutor.many.dto.SubjectManyDTO;
 import com.project.tutor.mapper.TutorSubject;
@@ -11,12 +13,12 @@ import com.project.tutor.repository.TutorSubjecRepository;
 import com.project.tutor.request.SubjectRequest;
 import com.project.tutor.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,10 +32,67 @@ public class SubjectImplementService implements SubjectService {
     @Autowired
     TutorRepository tutorRepository;
 
+    @Autowired
+    PagingSearchAndSorting pagingSearchAndSorting;
+
 
     @Override
-    public List<SubjectManyDTO> listSubject() {
-        List<Subject> listSubject = subjectRepository.findAll();
+    public List<SubjectManyDTO> listSubject(int page , int record) {
+
+        List<Subject> listSubject = subjectRepository.findAll
+                (pagingSearchAndSorting.pageablePageSizeAndRecordOrSearchOrSort(page ,record)).get().toList();
+
+        List<SubjectManyDTO> subjectDTOList = new ArrayList<>();
+        for (Subject subject : listSubject) {
+            SubjectManyDTO subjectDTO = new SubjectManyDTO();
+            subjectDTO.setId(subject.getId());
+            subjectDTO.setSubjectName(subject.getSubjectName());
+            subjectDTO.setDescription(subject.getDescription());
+            subjectDTO.setTotalMoneyMonthTeaching(subject.getTotalMoneyMonthTeaching());
+            subjectDTO.setNumberTeachOfWeek(subject.getNumberTeachOfWeek());
+            subjectDTO.setOneHourTeaching(subject.getOneHourTeaching());
+
+            List<TutorSubject> listTutorSubjectList = subject.getListTutorSubject();
+
+            List<TutorDTO> tutorDTOList = new ArrayList<>();
+
+            for (TutorSubject tutorSubject : listTutorSubjectList) {
+                TutorDTO tutorDTO = new TutorDTO();
+                tutorDTO.setId(tutorSubject.getTutor().getId());
+                tutorDTO.setCityTech(tutorSubject.getTutor().getCityTeach());
+                tutorDTO.setFullName(tutorSubject.getTutor().getFullName());
+                tutorDTO.setGender(tutorSubject.getTutor().getGender());
+                tutorDTO.setDateOfBirth(tutorSubject.getTutor().getDateOfBirth());
+                tutorDTO.setAddress(tutorSubject.getTutor().getAddress());
+                tutorDTO.setPhoneNumber(tutorSubject.getTutor().getPhoneNumber());
+                tutorDTO.setEmail(tutorSubject.getTutor().getEmail());
+                tutorDTO.setVoice(tutorSubject.getTutor().getVoice());
+                tutorDTO.setMajor(tutorSubject.getTutor().getMajor());
+                tutorDTO.setEcademicLevel(tutorSubject.getTutor().getEcademicLevel());
+                tutorDTO.setDescription(tutorSubject.getTutor().getDescription());
+                tutorDTO.setCitizenIdentificationCard(tutorSubject.getTutor().getCitizenIdentificationCard());
+                tutorDTO.setIssued(tutorSubject.getTutor().getIssued());
+                tutorDTO.setCitizenIdentificationCardFront(tutorSubject.getTutor().getCitizenIdentificationCardFront());
+                tutorDTO.setCitizenIdentificationCardFrontBackside(tutorSubject.getTutor().getCitizenIdentificationCardFrontBackside());
+                tutorDTO.setCardPhoto(tutorSubject.getTutor().getCardPhoto());
+                tutorDTO.setSchoolTeachOrStudent(tutorSubject.getTutor().getSchoolTeachOrStudent());
+                tutorDTO.setNumberTeachOfWeak(tutorSubject.getTutor().getNumberTeachOfWeek());
+                tutorDTO.setSalaryRequest(tutorSubject.getTutor().getSalaryRequest());
+                tutorDTO.setCreateAt(tutorSubject.getTutor().getCreateAt());
+
+                tutorDTOList.add(tutorDTO);
+            }
+            subjectDTO.setListTutorDTO(tutorDTOList);
+            subjectDTOList.add(subjectDTO);
+        }
+        return subjectDTOList;
+    }
+
+    @Override
+    public List<SubjectManyDTO> findAllSubjectByName (String subjectName , int page , int record){
+
+        List<Subject> listSubject = subjectRepository.findBySubjectNameContaining(subjectName,pagingSearchAndSorting.pageablePageSizeAndRecordOrSearchOrSort(page,record));
+
         List<SubjectManyDTO> subjectDTOList = new ArrayList<>();
         for (Subject subject : listSubject) {
             SubjectManyDTO subjectDTO = new SubjectManyDTO();
@@ -206,5 +265,41 @@ public class SubjectImplementService implements SubjectService {
         } else {
             throw new RuntimeException("Cannot found subject with id : " + subjectId);
         }
+    }
+
+    @Override
+    public Page<SubjectDTO> getSubjectAndPaging(String subjectName, int page, int size) {
+//        try {
+//            List<Subject> listSubjects = new ArrayList<>();
+//            Pageable paging = PageRequest.of(page, size);
+//
+//            Page<Subject> pageTuts;
+//            if (subjectName == null) {
+//                pageTuts = subjectRepository.findAll(paging);
+//            } else {
+//                pageTuts = subjectRepository.findBySubjectNameContaining(subjectName, paging);
+//            }
+//            listSubjects = pageTuts.getContent();
+//
+//            List<SubjectDTO> subjectDTOList = new ArrayList<>();
+//
+//            for (Subject subject : listSubjects) {
+//                // Convert Subject to SubjectDTO and add to the list
+//                SubjectDTO subjectDTO = new SubjectDTO();
+//                subjectDTO.setId(subject.getId());
+//                subjectDTO.setDescription(subject.getDescription());
+//                subjectDTO.setTotalMoneyMonthTeaching(subject.getTotalMoneyMonthTeaching());
+//                subjectDTO.setNumberTeachOfWeek(subject.getNumberTeachOfWeek());
+//                subjectDTO.setOneHourTeaching(subject.getOneHourTeaching());
+//
+//                subjectDTOList.add(subjectDTO);
+//            }
+//
+//            return new PageImpl<>(subjectDTOList, paging, pageTuts.getTotalElements());
+//
+//        } catch (Exception e) {
+//            throw new BadCredentialsException("Paging fail!");
+//        }
+return null;
     }
 }

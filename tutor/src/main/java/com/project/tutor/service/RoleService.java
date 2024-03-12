@@ -9,9 +9,11 @@ import java.util.List;
 
 @Service
 public interface RoleService {
-    public List<RoleManyDTO> getAllRole ();
+    public List<RoleManyDTO> getAllRole (int page , int record);
     public RoleRequest addRole (RoleRequest request);
     public boolean deleteRole (int roleId);
     public boolean updateRole (int roleId , RoleRequest request);
     public RoleManyDTO getRoleById (int roleId);
+
+    public List<RoleManyDTO> getAllRoleSearchAndPagingAndSort (String title , int page , int record);
 }
