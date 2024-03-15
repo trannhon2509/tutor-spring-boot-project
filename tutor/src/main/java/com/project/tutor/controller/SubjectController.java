@@ -63,9 +63,4 @@ public class SubjectController {
         return new ResponseEntity<>(data,HttpStatus.OK);
     }
 
-    @GetMapping("/paging")
-    public ResponseEntity<?> pagingSubject (@RequestParam (required = false) String subjectName , @RequestParam int page , @RequestParam int size){
-        Page subjectDTO = subjectService.getSubjectAndPaging(subjectName , page , size);
-        return new ResponseEntity<>(subjectDTO , HttpStatus.OK);
-    }
 }

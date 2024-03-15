@@ -1,18 +1,15 @@
 package com.project.tutor.dto;
 
 import com.project.tutor.model.Subject;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class TutorDTO {
     private int id;
     private String cityTech;
@@ -34,6 +31,7 @@ public class TutorDTO {
     private String schoolTeachOrStudent;
     private int numberTeachOfWeak;
     private double  salaryRequest;
+    private boolean approved;
     private LocalDateTime createAt;
 }
 

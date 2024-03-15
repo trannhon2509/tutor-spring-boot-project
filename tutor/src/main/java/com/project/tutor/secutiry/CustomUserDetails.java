@@ -34,7 +34,7 @@ public class CustomUserDetails implements UserDetailsService {
 
         // CHECK ACCOUNT ACTIVATED OR NOT
         if (!user.getUser().isActive()) {
-            throw new BadCredentialsException("Account don't acive : ");
+            throw new BadCredentialsException("Account don't acive");
         }
 
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();

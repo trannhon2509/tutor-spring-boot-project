@@ -25,10 +25,11 @@ public class TeachingImplementService implements TeachingService {
         List<TeachingDTO> listTeachingDTO = new ArrayList<>();
 
         for (Teaching teaching : listTeaching) {
-            TeachingDTO teachingDTO = new TeachingDTO();
-            teachingDTO.setTeachingId(teaching.getId());
-            teachingDTO.setTeachingName(teaching.getTeachingName());
-            teachingDTO.setSchedule(teaching.getSchedule());
+            TeachingDTO teachingDTO = TeachingDTO.builder()
+                    .teachingId(teaching.getId())
+                    .teachingName(teaching.getTeachingName())
+                    .schedule(teaching.getSchedule())
+                    .build();
 
             listTeachingDTO.add(teachingDTO);
         }
@@ -103,15 +104,14 @@ public class TeachingImplementService implements TeachingService {
         Optional<Teaching> checkTeachingExistOrnot = teachingRepository.findById(teachingId);
         try {
             if (checkTeachingExistOrnot.isPresent()) {
+
                 Teaching teaching = checkTeachingExistOrnot.get();
 
-                TeachingDTO teachingDTO = new TeachingDTO();
-
-                teachingDTO.setTeachingId(teaching.getId());
-                teachingDTO.setTeachingName(teaching.getTeachingName());
-                teachingDTO.setSchedule(teaching.getSchedule());
-
-                return teachingDTO;
+                return TeachingDTO.builder()
+                        .teachingId(teaching.getId())
+                        .teachingName(teaching.getTeachingName())
+                        .schedule(teaching.getSchedule())
+                        .build();
             }
         } catch (Exception e) {
             throw new RuntimeException("Cann't found  teaching detail with id  : " + teachingId);

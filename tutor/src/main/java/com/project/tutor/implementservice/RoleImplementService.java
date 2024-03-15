@@ -1,7 +1,6 @@
 package com.project.tutor.implementservice;
 
 import com.project.tutor.access.PagingSearchAndSorting;
-import com.project.tutor.dto.RoleDTO;
 import com.project.tutor.dto.UserDTO;
 import com.project.tutor.many.dto.RoleManyDTO;
 import com.project.tutor.mapper.UserRole;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -36,29 +34,31 @@ public class RoleImplementService implements RoleService {
     PagingSearchAndSorting pagingSearchAndSorting;
 
     @Override
-    public List<RoleManyDTO> getAllRole(int page , int record) {
-        List<Role> listRoles = roleRepository.findAll(pagingSearchAndSorting.pageablePageSizeAndRecordOrSearchOrSort(page,record)).get().toList();
+    public List<RoleManyDTO> getAllRole(int page, int record) {
+        List<Role> listRoles = roleRepository.findAll(pagingSearchAndSorting.pageablePageSizeAndRecordOrSearchOrSort(page, record)).get().toList();
         List<RoleManyDTO> listRoleManyDTO = new ArrayList<>();
         for (Role role : listRoles) {
-            RoleManyDTO roleMany = new RoleManyDTO();
-            roleMany.setId(role.getId());
-            roleMany.setRoleName(role.getRoleName());
-            roleMany.setCreateAt(role.getCreateAt());
+            RoleManyDTO roleMany = RoleManyDTO.builder()
+                    .id(role.getId())
+                    .roleName(role.getRoleName())
+                    .createAt(role.getCreateAt())
+                    .build();
             List<UserRole> listUserRoles = role.getListUserRoles();
 
             List<UserDTO> listUserDTO = new ArrayList<>();
             for (UserRole userRole : listUserRoles) {
-                UserDTO userDTO = new UserDTO();
-                userDTO.setUserId(userRole.getUser().getId());
-                userDTO.setUsername(userRole.getUser().getUsername());
-                userDTO.setPassword(userRole.getUser().getPassword());
-                userDTO.setEmail(userRole.getUser().getEmail());
-                userDTO.setFirstName(userRole.getUser().getFirstName());
-                userDTO.setLastName(userRole.getUser().getLastName());
-                userDTO.setAddress(userRole.getUser().getAddress());
-                userDTO.setPhoneNumber(userRole.getUser().getPhoneNumber());
-                userDTO.setCreateAt(userRole.getUser().getCreatAt());
-
+                UserDTO userDTO = UserDTO.builder()
+                        .userId(userRole.getUser().getId())
+                        .username(userRole.getUser().getUsername())
+                        .password(userRole.getUser().getPassword())
+                        .email(userRole.getUser().getEmail())
+                        .firstName(userRole.getUser().getFirstName())
+                        .lastName(userRole.getUser().getLastName())
+                        .address(userRole.getUser().getAddress())
+                        .phoneNumber(userRole.getUser().getPhoneNumber())
+                        .createAt(userRole.getUser().getCreatAt())
+                        .isActive(userRole.getUser().isActive())
+                        .build();
                 listUserDTO.add(userDTO);
             }
             roleMany.setListUserDTO(listUserDTO);
@@ -69,27 +69,30 @@ public class RoleImplementService implements RoleService {
 
     @Override
     public List<RoleManyDTO> getAllRoleSearchAndPagingAndSort(String title, int page, int record) {
-        List<Role> listRoles = roleRepository.findByRoleNameContaining(title, pagingSearchAndSorting.pageablePageSizeAndRecordOrSearchOrSort(page,record));
+        List<Role> listRoles = roleRepository.findByRoleNameContaining(title, pagingSearchAndSorting.pageablePageSizeAndRecordOrSearchOrSort(page, record));
         List<RoleManyDTO> listRoleManyDTO = new ArrayList<>();
         for (Role role : listRoles) {
-            RoleManyDTO roleMany = new RoleManyDTO();
-            roleMany.setId(role.getId());
-            roleMany.setRoleName(role.getRoleName());
-            roleMany.setCreateAt(role.getCreateAt());
+            RoleManyDTO roleMany = RoleManyDTO.builder()
+                    .id(role.getId())
+                    .roleName(role.getRoleName())
+                    .createAt(role.getCreateAt())
+                    .build();
             List<UserRole> listUserRoles = role.getListUserRoles();
 
             List<UserDTO> listUserDTO = new ArrayList<>();
             for (UserRole userRole : listUserRoles) {
-                UserDTO userDTO = new UserDTO();
-                userDTO.setUserId(userRole.getUser().getId());
-                userDTO.setUsername(userRole.getUser().getUsername());
-                userDTO.setPassword(userRole.getUser().getPassword());
-                userDTO.setEmail(userRole.getUser().getEmail());
-                userDTO.setFirstName(userRole.getUser().getFirstName());
-                userDTO.setLastName(userRole.getUser().getLastName());
-                userDTO.setAddress(userRole.getUser().getAddress());
-                userDTO.setPhoneNumber(userRole.getUser().getPhoneNumber());
-                userDTO.setCreateAt(userRole.getUser().getCreatAt());
+                UserDTO userDTO = UserDTO.builder()
+                        .userId(userRole.getUser().getId())
+                        .username(userRole.getUser().getUsername())
+                        .password(userRole.getUser().getPassword())
+                        .email(userRole.getUser().getEmail())
+                        .firstName(userRole.getUser().getFirstName())
+                        .lastName(userRole.getUser().getLastName())
+                        .address(userRole.getUser().getAddress())
+                        .phoneNumber(userRole.getUser().getPhoneNumber())
+                        .createAt(userRole.getUser().getCreatAt())
+                        .isActive(userRole.getUser().isActive())
+                        .build();
 
                 listUserDTO.add(userDTO);
             }
@@ -185,26 +188,26 @@ public class RoleImplementService implements RoleService {
                 Role role = checkRoleExistOrNot.get();
                 List<UserRole> listUserRole = userRoleRepository.findByRoleId(roleId);
 
-                RoleManyDTO roleMany = new RoleManyDTO();
-                roleMany.setId(role.getId());
-                roleMany.setRoleName(role.getRoleName());
-                roleMany.setCreateAt(role.getCreateAt());
+                RoleManyDTO roleMany = RoleManyDTO.builder()
+                        .id(role.getId())
+                        .roleName(role.getRoleName())
+                        .createAt(role.getCreateAt())
+                        .build();
 
                 List<UserDTO> listUsrDTO = listUserRole.stream().map(
-                        UserDTO -> {
-                            UserDTO userDTO = new UserDTO();
-                            userDTO.setUserId(UserDTO.getUser().getId());
-                            userDTO.setUsername(UserDTO.getUser().getUsername());
-                            userDTO.setPassword(UserDTO.getUser().getPassword());
-                            userDTO.setPhoneNumber(UserDTO.getUser().getPassword());
-                            userDTO.setEmail(UserDTO.getUser().getEmail());
-                            userDTO.setFirstName(UserDTO.getUser().getFirstName());
-                            userDTO.setLastName(UserDTO.getUser().getLastName());
-                            userDTO.setAddress(UserDTO.getUser().getAddress());
-                            userDTO.setPhoneNumber(UserDTO.getUser().getPhoneNumber());
-                            userDTO.setActive(UserDTO.getUser().isActive());
-                            userDTO.setCreateAt(UserDTO.getUser().getCreatAt());
-                            return userDTO;
+                        user -> {
+                            return UserDTO.builder()
+                                    .userId(user.getUser().getId())
+                                    .username(user.getUser().getUsername())
+                                    .password(user.getUser().getPassword())
+                                    .email(user.getUser().getEmail())
+                                    .firstName(user.getUser().getFirstName())
+                                    .lastName(user.getUser().getLastName())
+                                    .address(user.getUser().getAddress())
+                                    .phoneNumber(user.getUser().getPhoneNumber())
+                                    .createAt(user.getUser().getCreatAt())
+                                    .isActive(user.getUser().isActive())
+                                    .build();
                         }).collect(Collectors.toList());
                 roleMany.setListUserDTO(listUsrDTO);
                 return roleMany;

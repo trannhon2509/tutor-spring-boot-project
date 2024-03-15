@@ -2,17 +2,14 @@ package com.project.tutor.many.dto;
 
 import com.project.tutor.dto.SubjectDTO;
 import com.project.tutor.dto.TutorDTO;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class SubjectManyDTO {
     private int id;
     private String subjectName;

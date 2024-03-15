@@ -11,8 +11,8 @@ import java.util.List;
 
 @Service
 public interface UserService {
-    public ResponeDataAuth signup (UserRequest request);
-    public ResponeDataAuth signin (UserRequest request);
+    public boolean signup (UserRequest request);
+    public boolean signin (String username , String password);
     public UserManyDTO findUserById (int userId);
     public User findUserProfileByJwt (String jwt);
     public List<UserManyDTO> getAllUser (int page , int record);

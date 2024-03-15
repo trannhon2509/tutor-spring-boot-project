@@ -14,11 +14,13 @@ import com.project.tutor.repository.UserRepository;
 import com.project.tutor.repository.UserRoleRepository;
 import com.project.tutor.request.UserRequest;
 import com.project.tutor.respone.ResponeDataAuth;
+import com.project.tutor.secutiry.CustomFilterSecurity;
 import com.project.tutor.secutiry.CustomUserDetails;
 import com.project.tutor.secutiry.JwtProvider;
 import com.project.tutor.service.EmailService;
 import com.project.tutor.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -35,11 +37,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional(rollbackFor = Exception.class)
 public class UserImplementService implements UserService {
-    public final static ResponeDataAuth data = new ResponeDataAuth();
 
-   @Autowired
+    @Autowired
     UserRepository userRepository;
 
     @Autowired
@@ -66,89 +66,78 @@ public class UserImplementService implements UserService {
     @Autowired
     PagingSearchAndSorting pagingSearchAndSorting;
 
+    @Autowired
+    AuthenticationManager authenticationManager;
+
     @Override
     @Transactional
-    public ResponeDataAuth signup(UserRequest request) {
-        ResponeDataAuth data = new ResponeDataAuth();
-        try {
-            String username = request.getUsername();
-            String password = request.getPassword();
-            String passwordRepeat = request.getPasswordRepeat();
-            String email = request.getEmail();
-            String firstName = request.getFirstName();
-            String lastName = request.getLastName();
-            String address = request.getAddress();
-            String phoneNumber = request.getPhoneNumber();
-            // boolean isActive = request.isActive();
-            LocalDateTime createAt = request.getCreateAt();
-            List<Role> listRoles = request.getListUserRoles();
+    public boolean signup(UserRequest request) {
 
-            // Kiểm tra xem người dùng đã tồn tại hay chưa
-            User existUsername = userRepository.findByUsername(username);
-            User existEmail = userRepository.findByEmail(email);
+        String username = request.getUsername();
+        String password = request.getPassword();
+        String passwordRepeat = request.getPasswordRepeat();
+        String email = request.getEmail();
+        String firstName = request.getFirstName();
+        String lastName = request.getLastName();
+        String address = request.getAddress();
+        String phoneNumber = request.getPhoneNumber();
+        // boolean isActive = request.isActive();
+        LocalDateTime createAt = request.getCreateAt();
+        List<Role> listRoles = request.getListUserRoles();
 
-            if (existUsername != null) {
-                throw new BadCredentialsException("Username  already exists for another account");
-            }
-            if (existEmail != null) {
-                throw new BadCredentialsException("Gmail already exists for another account");
-            }
-            if (!password.equals(passwordRepeat)) {
-                throw new BadCredentialsException("Passowrd repeat not macth");
-            }
+        // Kiểm tra xem người dùng đã tồn tại hay chưa
+        User existUsername = userRepository.findByUsername(username);
+        User existEmail = userRepository.findByEmail(email);
 
-            // create new user   Assign and send infor actice
-            User newUser = new User();
-            newUser.setUsername(username);
-            newUser.setPassword(passwordEncoder.encode(password));
-            newUser.setEmail(email);
-            newUser.setFirstName(firstName);
-            newUser.setLastName(lastName);
-            newUser.setAddress(address);
-            newUser.setPhoneNumber(phoneNumber);
-            newUser.setActive(false);
-            newUser.setActiveCode(emailService.createActiveCode());
+        if (existUsername != null) {
+            throw new RuntimeException("Username  already exists for another account");
+        }
+        if (existEmail != null) {
+            throw new RuntimeException("Gmail already exists for another account");
+        }
+        if (!password.equals(passwordRepeat)) {
+            throw new RuntimeException("Passowrd repeat not macth");
+        }
 
-            // Save user
-            User savedUser = userRepository.save(newUser);
+        // create new user   Assign and send infor actice
+        User newUser = new User();
+        newUser.setUsername(username);
+        newUser.setPassword(passwordEncoder.encode(password));
+        newUser.setEmail(email);
+        newUser.setFirstName(firstName);
+        newUser.setLastName(lastName);
+        newUser.setAddress(address);
+        newUser.setPhoneNumber(phoneNumber);
+        newUser.setActive(false);
+        newUser.setActiveCode(emailService.createActiveCode());
 
-            // Assign role exist to user
-            if (listRoles != null && !listRoles.isEmpty()) {
-                List<UserRole> userRoles = new ArrayList<>();
-                for (Role role : listRoles) {
-                    Role existingRole = roleRepository.findById(role.getId()).get();
-                    UserRole userRole = new UserRole();
-                    userRole.setUser(savedUser);
-                    userRole.setRole(existingRole);
-                    userRoles.add(userRole);
-                }
-                // Save list userRoles
-                userRoleRepository.saveAll(userRoles);
-            } else {
-                Role roleDefault = roleRepository.findById(3).get();
+        // Save user
+        User savedUser = userRepository.save(newUser);
+
+        // Assign role exist to user
+        if (listRoles != null && !listRoles.isEmpty()) {
+            List<UserRole> userRoles = new ArrayList<>();
+            for (Role role : listRoles) {
+                Role existingRole = roleRepository.findById(role.getId()).get();
                 UserRole userRole = new UserRole();
                 userRole.setUser(savedUser);
-                userRole.setRole(roleDefault);
-                userRoleRepository.save(userRole);
+                userRole.setRole(existingRole);
+                userRoles.add(userRole);
             }
-
-            //Send email actice account
-//            emailService.sendEmailActive(newUser.getEmail(), newUser.getActiveCode());
-
-            // Tạo và gán authentication token
-//            Authentication authentication = new UsernamePasswordAuthenticationToken(savedUser.getUsername(), savedUser.getPassword());
-//            SecurityContextHolder.getContext().setAuthentication(authentication);
-//            String token = jwtProvider.generateToken(username);
-//            data.setJwt(token);
-            data.setMsg("Signup success");
-            data.setData(true);
-            return data;
-        } catch (Exception e) {
-            data.setToken(null);
-            data.setMsg("Signup failed");
-            data.setData(false);
-            return data;
+            // Save list userRoles
+            userRoleRepository.saveAll(userRoles);
+        } else {
+            Role roleDefault = roleRepository.findById(3).get();
+            UserRole userRole = new UserRole();
+            userRole.setUser(savedUser);
+            userRole.setRole(roleDefault);
+            userRoleRepository.save(userRole);
         }
+
+        //Send email actice account
+        //emailService.sendEmailActive(newUser.getEmail(), newUser.getActiveCode());
+
+        return true;
     }
 
     @Override
@@ -200,27 +189,19 @@ public class UserImplementService implements UserService {
     }
 
     @Override
-    public ResponeDataAuth signin(UserRequest request) {
-        ResponeDataAuth data = new ResponeDataAuth();
-        try {
-            String username = request.getUsername();
-            String password = request.getPassword();
-
-            Authentication authentication = authentication(username, password);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            String token = jwtProvider.generateToken(username);
-
-            data.setToken(token);
-            data.setMsg("Signin success");
-            data.setData(true);
-            return data;
-        } catch (Exception e) {
-            data.setToken(null);
-            data.setMsg("Signin fail");
-            data.setData(false);
-            return data;
+    public boolean signin(String username, String password) {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            return false;
         }
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            return false;
+        }
+        Authentication authentication = new UsernamePasswordAuthenticationToken(username, password);
+        Authentication authenticatedUser = authenticationManager.authenticate(authentication);
+        SecurityContextHolder.getContext().setAuthentication(authenticatedUser);
+
+        return true;
     }
 
 
@@ -286,40 +267,37 @@ public class UserImplementService implements UserService {
             User user = optionalUser.get();
             List<UserRole> userRoles = userRoleRepository.findByUserId(userId);
 
-            UserManyDTO userMany = new UserManyDTO();
-            userMany.setUserId(user.getId());
-            userMany.setUsername(user.getUsername());
-            userMany.setPassword(user.getPassword());
-            userMany.setEmail(user.getEmail());
-            userMany.setFirstName(user.getFirstName());
-            userMany.setLastName(user.getLastName());
-            userMany.setAddress(user.getAddress());
-            userMany.setPhoneNumber(user.getPhoneNumber());
-            userMany.setActive(user.isActive());
-            userMany.setCreateAt(user.getCreatAt());
-
+            UserManyDTO userMany = UserManyDTO.builder()
+                    .userId(user.getId())
+                    .username(user.getUsername())
+                    .password(user.getPassword())
+                    .email(user.getEmail())
+                    .firstName(user.getFirstName())
+                    .lastName(user.getLastName())
+                    .address(user.getAddress())
+                    .phoneNumber(user.getPhoneNumber())
+                    .isActive(user.isActive())
+                    .createAt(user.getCreatAt())
+                    .build();
             List<FeedBack> listFeedbacks = user.getListFeedbacks();
 
             List<RoleDTO> roleDTOList = userRoles.stream()
                     .map(userRole -> {
-                        RoleDTO roleDTO = new RoleDTO();
-                        roleDTO.setId(userRole.getRole().getId());
-                        roleDTO.setRoleName(userRole.getRole().getRoleName());
-                        roleDTO.setCreateAt(userRole.getRole().getCreateAt());
-                        return roleDTO;
-                    })
-                    .collect(Collectors.toList());
+                        return  RoleDTO.builder()
+                                .id(userRole.getRole().getId())
+                                .roleName(userRole.getRole().getRoleName())
+                                .createAt(userRole.getRole().getCreateAt())
+                                .build();
+                    }).collect(Collectors.toList());
 
             List<FeedBackDTO> listFeedBackDTO = listFeedbacks.stream().map(
                     feedback -> {
-                        FeedBackDTO feedBackDTO = new FeedBackDTO();
-                        feedBackDTO.setFeedbackId(feedback.getId());
-                        feedBackDTO.setContent(feedback.getContent());
-                        feedBackDTO.setRating(feedback.getRating());
-                        feedBackDTO.setContent(feedback.getContent());
-                        feedBackDTO.setContent(feedback.getContent());
-
-                        return feedBackDTO;
+                        return FeedBackDTO.builder()
+                                .feedbackId(feedback.getId())
+                                .content(feedback.getContent())
+                                .rating(feedback.getRating())
+                                .createAt(feedback.getCreateAt())
+                                .build();
                     }).collect(Collectors.toList());
 
             userMany.setListRoleDTOs(roleDTOList);
@@ -343,44 +321,46 @@ public class UserImplementService implements UserService {
 
     @Override
     public List<UserManyDTO> getAllUser(int page, int record) {
-        List<User> listUser = userRepository.findAll(pagingSearchAndSorting.pageablePageSizeAndRecordOrSearchOrSort(page , record)).get().toList();
+        List<User> listUser = userRepository.findAll(pagingSearchAndSorting.pageablePageSizeAndRecordOrSearchOrSort(page, record)).get().toList();
         List<UserManyDTO> userDTOList = new ArrayList<>();
 
         for (User user : listUser) {
-            UserManyDTO userMany = new UserManyDTO();
-
-            userMany.setUserId(user.getId());
-            userMany.setUsername(user.getUsername());
-            userMany.setPassword(user.getPassword());
-            userMany.setEmail(user.getEmail());
-            userMany.setFirstName(user.getFirstName());
-            userMany.setLastName(user.getLastName());
-            userMany.setAddress(user.getAddress());
-            userMany.setPhoneNumber(user.getPhoneNumber());
-            userMany.setActive(user.isActive());
-            userMany.setCreateAt(user.getCreatAt());
+            UserManyDTO userMany = UserManyDTO.builder()
+                    .userId(user.getId())
+                    .username(user.getUsername())
+                    .password(user.getPassword())
+                    .email(user.getEmail())
+                    .firstName(user.getFirstName())
+                    .lastName(user.getLastName())
+                    .address(user.getAddress())
+                    .phoneNumber(user.getPhoneNumber())
+                    .isActive(user.isActive())
+                    .createAt(user.getCreatAt())
+                    .build();
 
             List<UserRole> userRoleList = userRoleRepository.findByUserId(user.getId());
+
             List<FeedBack> listFeedbacks = user.getListFeedbacks();
 
             List<RoleDTO> listRoleDto = new ArrayList<>();
             List<FeedBackDTO> listFeedbackDTO = new ArrayList<>();
 
             for (UserRole userRole : userRoleList) {
-                RoleDTO roleDTO = new RoleDTO();
-                roleDTO.setId(userRole.getRole().getId());
-                roleDTO.setRoleName(userRole.getRole().getRoleName());
-                roleDTO.setCreateAt(userRole.getRole().getCreateAt());
+                RoleDTO roleDTO = RoleDTO.builder()
+                        .id(userRole.getRole().getId())
+                        .roleName(userRole.getRole().getRoleName())
+                        .createAt(userRole.getRole().getCreateAt())
+                        .build();
 
                 listRoleDto.add(roleDTO);
             }
-            for (FeedBack feedBack : listFeedbacks) {
-                FeedBackDTO feedBackDTO = new FeedBackDTO();
-                feedBackDTO.setFeedbackId(feedBack.getId());
-                feedBackDTO.setRating(feedBack.getRating());
-                feedBackDTO.setContent(feedBack.getContent());
-                feedBackDTO.setCreateAt(feedBack.getCreateAt());
-
+            for (FeedBack feedback : listFeedbacks) {
+                FeedBackDTO feedBackDTO = FeedBackDTO.builder()
+                        .feedbackId(feedback.getId())
+                        .content(feedback.getContent())
+                        .rating(feedback.getRating())
+                        .createAt(feedback.getCreateAt())
+                        .build();
                 listFeedbackDTO.add(feedBackDTO);
             }
             userMany.setListRoleDTOs(listRoleDto);
@@ -411,7 +391,7 @@ public class UserImplementService implements UserService {
                 return true;
             }
         } catch (Exception e) {
-            throw new RuntimeException("Active account fail!" + e.getMessage());
+            throw new RuntimeException("Active account fail because " + e.getMessage());
         }
         return false;
     }
@@ -429,22 +409,22 @@ public class UserImplementService implements UserService {
 
     @Override
     public List<UserManyDTO> getAlllistUserAndSearching(String title, int page, int record) {
-        List<User> listUser = userRepository.findByUsernameContaining(title ,pagingSearchAndSorting.pageablePageSizeAndRecordOrSearchOrSort(page,record));
+        List<User> listUser = userRepository.findByUsernameContaining(title, pagingSearchAndSorting.pageablePageSizeAndRecordOrSearchOrSort(page, record));
         List<UserManyDTO> userDTOList = new ArrayList<>();
 
         for (User user : listUser) {
-            UserManyDTO userMany = new UserManyDTO();
-
-            userMany.setUserId(user.getId());
-            userMany.setUsername(user.getUsername());
-            userMany.setPassword(user.getPassword());
-            userMany.setEmail(user.getEmail());
-            userMany.setFirstName(user.getFirstName());
-            userMany.setLastName(user.getLastName());
-            userMany.setAddress(user.getAddress());
-            userMany.setPhoneNumber(user.getPhoneNumber());
-            userMany.setActive(user.isActive());
-            userMany.setCreateAt(user.getCreatAt());
+            UserManyDTO userMany = UserManyDTO.builder()
+                    .userId(user.getId())
+                    .username(user.getUsername())
+                    .password(user.getPassword())
+                    .email(user.getEmail())
+                    .firstName(user.getFirstName())
+                    .lastName(user.getLastName())
+                    .address(user.getAddress())
+                    .phoneNumber(user.getPhoneNumber())
+                    .isActive(user.isActive())
+                    .createAt(user.getCreatAt())
+                    .build();
 
             List<UserRole> userRoleList = userRoleRepository.findByUserId(user.getId());
             List<FeedBack> listFeedbacks = user.getListFeedbacks();
@@ -453,19 +433,21 @@ public class UserImplementService implements UserService {
             List<FeedBackDTO> listFeedbackDTO = new ArrayList<>();
 
             for (UserRole userRole : userRoleList) {
-                RoleDTO roleDTO = new RoleDTO();
-                roleDTO.setId(userRole.getRole().getId());
-                roleDTO.setRoleName(userRole.getRole().getRoleName());
-                roleDTO.setCreateAt(userRole.getRole().getCreateAt());
+                RoleDTO roleDTO = RoleDTO.builder()
+                        .id(userRole.getRole().getId())
+                        .roleName(userRole.getRole().getRoleName())
+                        .createAt(userRole.getRole().getCreateAt())
+                        .build();
 
                 listRoleDto.add(roleDTO);
             }
-            for (FeedBack feedBack : listFeedbacks) {
-                FeedBackDTO feedBackDTO = new FeedBackDTO();
-                feedBackDTO.setFeedbackId(feedBack.getId());
-                feedBackDTO.setRating(feedBack.getRating());
-                feedBackDTO.setContent(feedBack.getContent());
-                feedBackDTO.setCreateAt(feedBack.getCreateAt());
+            for (FeedBack feedback : listFeedbacks) {
+                FeedBackDTO feedBackDTO = FeedBackDTO.builder()
+                        .feedbackId(feedback.getId())
+                        .content(feedback.getContent())
+                        .rating(feedback.getRating())
+                        .createAt(feedback.getCreateAt())
+                        .build();
 
                 listFeedbackDTO.add(feedBackDTO);
             }
@@ -478,11 +460,6 @@ public class UserImplementService implements UserService {
     }
 
 }
-
-
-
-
-
 
 
 

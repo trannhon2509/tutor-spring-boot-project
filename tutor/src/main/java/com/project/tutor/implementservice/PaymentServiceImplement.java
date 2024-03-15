@@ -18,6 +18,9 @@ import java.util.Optional;
 
 @Service
 public class PaymentServiceImplement implements PaymentService {
+
+    @Autowired
+    PaymentRepostiory paymentRepostiory;
     @Override
     public boolean addPayment(PaymentRequest request) {
         try {
@@ -29,7 +32,7 @@ public class PaymentServiceImplement implements PaymentService {
             Tutor tutor = new Tutor();
             tutor.setId(request.getTutorId());
 
-            if(createAt == null){
+            if (createAt == null) {
                 createAt = LocalDateTime.now();
             }
 
@@ -83,7 +86,7 @@ public class PaymentServiceImplement implements PaymentService {
         } catch (Exception e) {
             throw new BadCredentialsException("Cannot delete payment with id :" + paymentId);
         }
-       return false;
+        return false;
     }
 
     @Override
@@ -91,15 +94,14 @@ public class PaymentServiceImplement implements PaymentService {
         try {
             Optional<Payment> checkPaymentExistOrNot = paymentRepostiory.findById(paymentId);
             if (checkPaymentExistOrNot.isPresent()) {
-
                 Payment payment = checkPaymentExistOrNot.get();
-                PaymentDTO paymentDTO = new PaymentDTO();
-                paymentDTO.setPaymentId(payment.getId());
-                paymentDTO.setCreateAt(payment.getCreateAt());
-                paymentDTO.setPaymentPrice(payment.getPaymentPrice());
-                paymentDTO.setPaymentStatus(payment.getPaymentStatus());
 
-                return paymentDTO;
+                return PaymentDTO.builder()
+                        .paymentId(payment.getId())
+                        .createAt(payment.getCreateAt())
+                        .paymentPrice(payment.getPaymentPrice())
+                        .paymentStatus(payment.getPaymentStatus())
+                        .build();
             }
         } catch (Exception e) {
             throw new BadCredentialsException("Cannot found payment with id :" + paymentId);
@@ -107,8 +109,7 @@ public class PaymentServiceImplement implements PaymentService {
         return null;
     }
 
-    @Autowired
-    PaymentRepostiory paymentRepostiory;
+
 
     @Override
     public List<PaymentDTO> getAllPayment() {
@@ -116,12 +117,12 @@ public class PaymentServiceImplement implements PaymentService {
         List<PaymentDTO> listPaymentDTOs = new ArrayList<>();
 
         for (Payment payment : listPayments) {
-            PaymentDTO paymentDTO = new PaymentDTO();
-            paymentDTO.setPaymentId(payment.getId());
-            paymentDTO.setPaymenName(payment.getPaymentName());
-            paymentDTO.setCreateAt(payment.getCreateAt());
-            paymentDTO.setPaymentPrice(payment.getPaymentPrice());
-            paymentDTO.setPaymentStatus(payment.getPaymentStatus());
+            PaymentDTO paymentDTO = PaymentDTO.builder()
+                    .paymentId(payment.getId())
+                    .createAt(payment.getCreateAt())
+                    .paymentPrice(payment.getPaymentPrice())
+                    .paymentStatus(payment.getPaymentStatus())
+                    .build();
 
             listPaymentDTOs.add(paymentDTO);
         }

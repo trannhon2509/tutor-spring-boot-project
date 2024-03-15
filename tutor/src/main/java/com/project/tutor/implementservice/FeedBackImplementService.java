@@ -42,12 +42,13 @@ public class FeedBackImplementService implements FeedbackService {
         List<FeedBack> listFeedbacks = feedBackRepository.findAll();
         List<FeedBackDTO> listFeedbackDTO = new ArrayList<>();
 
-        for (FeedBack feedBack : listFeedbacks) {
-            FeedBackDTO feedBackDTO = new FeedBackDTO();
-            feedBackDTO.setFeedbackId(feedBack.getId());
-            feedBackDTO.setContent(feedBack.getContent());
-            feedBackDTO.setRating(feedBack.getRating());
-            feedBackDTO.setCreateAt(feedBack.getCreateAt());
+        for (FeedBack feedback : listFeedbacks) {
+            FeedBackDTO feedBackDTO = FeedBackDTO.builder()
+                    .feedbackId(feedback.getId())
+                    .content(feedback.getContent())
+                    .rating(feedback.getRating())
+                    .createAt(feedback.getCreateAt())
+                    .build();
             listFeedbackDTO.add(feedBackDTO);
         }
         return listFeedbackDTO;

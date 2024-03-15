@@ -3,18 +3,15 @@ package com.project.tutor.many.dto;
 import com.project.tutor.dto.FeedBackDTO;
 import com.project.tutor.dto.RoleDTO;
 import com.project.tutor.dto.SubjectDTO;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class UserManyDTO {
     private int userId;
     private String username;

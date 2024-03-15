@@ -3,18 +3,15 @@ package com.project.tutor.many.dto;
 import com.project.tutor.dto.FeedBackDTO;
 import com.project.tutor.dto.SubjectDTO;
 import com.project.tutor.dto.TeachingDTO;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Setter
-@Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class TutorManyDTO {
     private int id;
     private String cityTech;

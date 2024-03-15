@@ -17,7 +17,5 @@ public interface SubjectService {
     public boolean updateSubject (int subjectId , SubjectRequest request);
     public SubjectManyDTO getSubjectById (int subjectId);
 
-    public Page<SubjectDTO> getSubjectAndPaging (String subjectName , int page , int size);
-
     public List<SubjectManyDTO> findAllSubjectByName (String subjectName , int page , int record);
 }

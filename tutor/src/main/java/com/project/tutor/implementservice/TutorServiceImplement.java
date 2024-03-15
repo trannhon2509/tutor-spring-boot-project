@@ -38,8 +38,6 @@ public class TutorServiceImplement implements TutorService {
     @Autowired
     PagingSearchAndSorting pagingSearchAndSorting;
 
-
-
     @Autowired
     SubjectRepository subjectRepository;
     @Autowired
@@ -57,29 +55,30 @@ public class TutorServiceImplement implements TutorService {
         List<TutorManyDTO> listTutorDTO = new ArrayList<>();
 
         for (Tutor tutor : listTutors) {
-            TutorManyDTO tutorManyDTO = new TutorManyDTO();
-            tutorManyDTO.setId(tutor.getId());
-            tutorManyDTO.setCityTech(tutor.getCityTeach());
-            tutorManyDTO.setFullName(tutor.getFullName());
-            tutorManyDTO.setGender(tutor.getGender());
-            tutorManyDTO.setDateOfBirth(tutor.getDateOfBirth());
-            tutorManyDTO.setAddress(tutor.getAddress());
-            tutorManyDTO.setPhoneNumber(tutor.getPhoneNumber());
-            tutorManyDTO.setEmail(tutor.getEmail());
-            tutorManyDTO.setVoice(tutor.getVoice());
-            tutorManyDTO.setMajor(tutor.getMajor());
-            tutorManyDTO.setEcademicLevel(tutor.getEcademicLevel());
-            tutorManyDTO.setDescription(tutor.getDescription());
-            tutorManyDTO.setCitizenIdentificationCard(tutor.getCitizenIdentificationCard());
-            tutorManyDTO.setIssued(tutor.getIssued());
-            tutorManyDTO.setCitizenIdentificationCardFront(tutor.getCitizenIdentificationCardFront());
-            tutorManyDTO.setCitizenIdentificationCardFrontBackside(tutor.getCitizenIdentificationCardFrontBackside());
-            tutorManyDTO.setCardPhoto(tutor.getCardPhoto());
-            tutorManyDTO.setSchoolTeachOrStudent(tutor.getSchoolTeachOrStudent());
-            tutorManyDTO.setNumberTeachOfWeak(tutor.getNumberTeachOfWeek());
-            tutorManyDTO.setSalaryRequest(tutor.getSalaryRequest());
-            tutorManyDTO.setCreateAt(tutor.getCreateAt());
-            tutorManyDTO.setApproved(tutor.isApproved());
+            TutorManyDTO tutorManyDTO = TutorManyDTO.builder()
+                    .id(tutor.getId())
+                    .cityTech(tutor.getCityTeach())
+                    .fullName(tutor.getFullName())
+                    .gender(tutor.getGender())
+                    .dateOfBirth(tutor.getDateOfBirth())
+                    .address(tutor.getAddress())
+                    .phoneNumber(tutor.getPhoneNumber())
+                    .email(tutor.getEmail())
+                    .voice(tutor.getVoice())
+                    .major(tutor.getMajor())
+                    .ecademicLevel(tutor.getEcademicLevel())
+                    .description(tutor.getDescription())
+                    .citizenIdentificationCard(tutor.getCitizenIdentificationCard())
+                    .issued(tutor.getIssued())
+                    .citizenIdentificationCardFront(tutor.getCitizenIdentificationCardFront())
+                    .citizenIdentificationCardFrontBackside(tutor.getCitizenIdentificationCardFrontBackside())
+                    .cardPhoto(tutor.getCardPhoto())
+                    .schoolTeachOrStudent(tutor.getSchoolTeachOrStudent())
+                    .numberTeachOfWeak(tutor.getNumberTeachOfWeek())
+                    .salaryRequest(tutor.getSalaryRequest())
+                    .createAt(tutor.getCreateAt())
+                    .approved(tutor.isApproved())
+                    .build();
 
             listTutorDTO.add(tutorManyDTO);
         }
@@ -106,34 +105,35 @@ public class TutorServiceImplement implements TutorService {
     }
 
     @Override
-    public List<TutorManyDTO> getAllTutor(int page , int record) {
-        List<Tutor> listTutors = tutorRepository.findAll(pagingSearchAndSorting.pageablePageSizeAndRecordOrSearchOrSort(page,record)).getContent();
+    public List<TutorManyDTO> getAllTutor(int page, int record) {
+        List<Tutor> listTutors = tutorRepository.findAll(pagingSearchAndSorting.pageablePageSizeAndRecordOrSearchOrSort(page, record)).getContent();
         List<TutorManyDTO> listTutorDTO = new ArrayList<>();
 
         for (Tutor tutor : listTutors) {
-            TutorManyDTO tutorManyDTO = new TutorManyDTO();
-            tutorManyDTO.setId(tutor.getId());
-            tutorManyDTO.setCityTech(tutor.getCityTeach());
-            tutorManyDTO.setFullName(tutor.getFullName());
-            tutorManyDTO.setGender(tutor.getGender());
-            tutorManyDTO.setDateOfBirth(tutor.getDateOfBirth());
-            tutorManyDTO.setAddress(tutor.getAddress());
-            tutorManyDTO.setPhoneNumber(tutor.getPhoneNumber());
-            tutorManyDTO.setEmail(tutor.getEmail());
-            tutorManyDTO.setVoice(tutor.getVoice());
-            tutorManyDTO.setMajor(tutor.getMajor());
-            tutorManyDTO.setEcademicLevel(tutor.getEcademicLevel());
-            tutorManyDTO.setDescription(tutor.getDescription());
-            tutorManyDTO.setCitizenIdentificationCard(tutor.getCitizenIdentificationCard());
-            tutorManyDTO.setIssued(tutor.getIssued());
-            tutorManyDTO.setCitizenIdentificationCardFront(tutor.getCitizenIdentificationCardFront());
-            tutorManyDTO.setCitizenIdentificationCardFrontBackside(tutor.getCitizenIdentificationCardFrontBackside());
-            tutorManyDTO.setCardPhoto(tutor.getCardPhoto());
-            tutorManyDTO.setSchoolTeachOrStudent(tutor.getSchoolTeachOrStudent());
-            tutorManyDTO.setNumberTeachOfWeak(tutor.getNumberTeachOfWeek());
-            tutorManyDTO.setSalaryRequest(tutor.getSalaryRequest());
-            tutorManyDTO.setCreateAt(tutor.getCreateAt());
-            tutorManyDTO.setApproved(tutor.isApproved());
+            TutorManyDTO tutorManyDTO = TutorManyDTO.builder()
+                    .id(tutor.getId())
+                    .cityTech(tutor.getCityTeach())
+                    .fullName(tutor.getFullName())
+                    .gender(tutor.getGender())
+                    .dateOfBirth(tutor.getDateOfBirth())
+                    .address(tutor.getAddress())
+                    .phoneNumber(tutor.getPhoneNumber())
+                    .email(tutor.getEmail())
+                    .voice(tutor.getVoice())
+                    .major(tutor.getMajor())
+                    .ecademicLevel(tutor.getEcademicLevel())
+                    .description(tutor.getDescription())
+                    .citizenIdentificationCard(tutor.getCitizenIdentificationCard())
+                    .issued(tutor.getIssued())
+                    .citizenIdentificationCardFront(tutor.getCitizenIdentificationCardFront())
+                    .citizenIdentificationCardFrontBackside(tutor.getCitizenIdentificationCardFrontBackside())
+                    .cardPhoto(tutor.getCardPhoto())
+                    .schoolTeachOrStudent(tutor.getSchoolTeachOrStudent())
+                    .numberTeachOfWeak(tutor.getNumberTeachOfWeek())
+                    .salaryRequest(tutor.getSalaryRequest())
+                    .createAt(tutor.getCreateAt())
+                    .approved(tutor.isApproved())
+                    .build();
 
             List<TutorSubject> listTutorSubject = tutor.getListTutorSubject();
             List<Teaching> listTeachings = tutor.getListTeachings();
@@ -144,30 +144,35 @@ public class TutorServiceImplement implements TutorService {
             List<FeedBackDTO> listFeedbackDTO = new ArrayList<>();
 
             for (TutorSubject tutorSubject : listTutorSubject) {
-                SubjectDTO subjectDTO = new SubjectDTO();
-                subjectDTO.setId(tutorSubject.getSubject().getId());
-                subjectDTO.setSubjectName(tutorSubject.getSubject().getSubjectName());
-                subjectDTO.setDescription(tutorSubject.getSubject().getDescription());
-                subjectDTO.setTotalMoneyMonthTeaching(tutorSubject.getSubject().getTotalMoneyMonthTeaching());
-                subjectDTO.setNumberTeachOfWeek(tutorSubject.getSubject().getNumberTeachOfWeek());
-                subjectDTO.setOneHourTeaching(tutorSubject.getSubject().getOneHourTeaching());
+                SubjectDTO subjectDTO = SubjectDTO.builder()
+
+                        .id(tutorSubject.getSubject().getId())
+                        .subjectName(tutorSubject.getSubject().getSubjectName())
+                        .description(tutorSubject.getSubject().getDescription())
+                        .totalMoneyMonthTeaching(tutorSubject.getSubject().getTotalMoneyMonthTeaching())
+                        .numberTeachOfWeek(tutorSubject.getSubject().getNumberTeachOfWeek())
+                        .oneHourTeaching(tutorSubject.getSubject().getOneHourTeaching())
+                        .build();
 
                 listSubjectDTOs.add(subjectDTO);
+
             }
             for (Teaching teaching : listTeachings) {
-                TeachingDTO teachingDTO = new TeachingDTO();
-                teachingDTO.setTeachingId(teaching.getId());
-                teachingDTO.setTeachingName(teaching.getTeachingName());
-                teachingDTO.setSchedule(teaching.getSchedule());
+                TeachingDTO teachingDTO = TeachingDTO.builder()
+                        .teachingId(teaching.getId())
+                        .teachingName(teaching.getTeachingName())
+                        .schedule(teaching.getSchedule())
+                        .build();
                 listTeachingDTO.add(teachingDTO);
             }
 
-            for (FeedBack feedBack : listFeedback) {
-                FeedBackDTO feedBackDTO = new FeedBackDTO();
-                feedBackDTO.setFeedbackId(feedBack.getId());
-                feedBackDTO.setContent(feedBack.getContent());
-                feedBackDTO.setRating(feedBack.getRating());
-                feedBackDTO.setCreateAt(feedBack.getCreateAt());
+            for (FeedBack feedback : listFeedback) {
+                FeedBackDTO feedBackDTO = FeedBackDTO.builder()
+                        .feedbackId(feedback.getId())
+                        .content(feedback.getContent())
+                        .rating(feedback.getRating())
+                        .createAt(feedback.getCreateAt())
+                        .build();
 
                 listFeedbackDTO.add(feedBackDTO);
             }
@@ -183,33 +188,34 @@ public class TutorServiceImplement implements TutorService {
 
     @Override
     public List<TutorManyDTO> getAllTutorSearchAndPagingAndSort(String title, int page, int record) {
-        List<Tutor> listTutors = tutorRepository.findByFullNameContaining(title ,pagingSearchAndSorting.pageablePageSizeAndRecordOrSearchOrSort(page,record));
+        List<Tutor> listTutors = tutorRepository.findByFullNameContaining(title, pagingSearchAndSorting.pageablePageSizeAndRecordOrSearchOrSort(page, record));
         List<TutorManyDTO> listTutorDTO = new ArrayList<>();
 
         for (Tutor tutor : listTutors) {
-            TutorManyDTO tutorManyDTO = new TutorManyDTO();
-            tutorManyDTO.setId(tutor.getId());
-            tutorManyDTO.setCityTech(tutor.getCityTeach());
-            tutorManyDTO.setFullName(tutor.getFullName());
-            tutorManyDTO.setGender(tutor.getGender());
-            tutorManyDTO.setDateOfBirth(tutor.getDateOfBirth());
-            tutorManyDTO.setAddress(tutor.getAddress());
-            tutorManyDTO.setPhoneNumber(tutor.getPhoneNumber());
-            tutorManyDTO.setEmail(tutor.getEmail());
-            tutorManyDTO.setVoice(tutor.getVoice());
-            tutorManyDTO.setMajor(tutor.getMajor());
-            tutorManyDTO.setEcademicLevel(tutor.getEcademicLevel());
-            tutorManyDTO.setDescription(tutor.getDescription());
-            tutorManyDTO.setCitizenIdentificationCard(tutor.getCitizenIdentificationCard());
-            tutorManyDTO.setIssued(tutor.getIssued());
-            tutorManyDTO.setCitizenIdentificationCardFront(tutor.getCitizenIdentificationCardFront());
-            tutorManyDTO.setCitizenIdentificationCardFrontBackside(tutor.getCitizenIdentificationCardFrontBackside());
-            tutorManyDTO.setCardPhoto(tutor.getCardPhoto());
-            tutorManyDTO.setSchoolTeachOrStudent(tutor.getSchoolTeachOrStudent());
-            tutorManyDTO.setNumberTeachOfWeak(tutor.getNumberTeachOfWeek());
-            tutorManyDTO.setSalaryRequest(tutor.getSalaryRequest());
-            tutorManyDTO.setCreateAt(tutor.getCreateAt());
-            tutorManyDTO.setApproved(tutor.isApproved());
+            TutorManyDTO tutorManyDTO = TutorManyDTO.builder()
+                    .id(tutor.getId())
+                    .cityTech(tutor.getCityTeach())
+                    .fullName(tutor.getFullName())
+                    .gender(tutor.getGender())
+                    .dateOfBirth(tutor.getDateOfBirth())
+                    .address(tutor.getAddress())
+                    .phoneNumber(tutor.getPhoneNumber())
+                    .email(tutor.getEmail())
+                    .voice(tutor.getVoice())
+                    .major(tutor.getMajor())
+                    .ecademicLevel(tutor.getEcademicLevel())
+                    .description(tutor.getDescription())
+                    .citizenIdentificationCard(tutor.getCitizenIdentificationCard())
+                    .issued(tutor.getIssued())
+                    .citizenIdentificationCardFront(tutor.getCitizenIdentificationCardFront())
+                    .citizenIdentificationCardFrontBackside(tutor.getCitizenIdentificationCardFrontBackside())
+                    .cardPhoto(tutor.getCardPhoto())
+                    .schoolTeachOrStudent(tutor.getSchoolTeachOrStudent())
+                    .numberTeachOfWeak(tutor.getNumberTeachOfWeek())
+                    .salaryRequest(tutor.getSalaryRequest())
+                    .createAt(tutor.getCreateAt())
+                    .approved(tutor.isApproved())
+                    .build();
 
             List<TutorSubject> listTutorSubject = tutor.getListTutorSubject();
             List<Teaching> listTeachings = tutor.getListTeachings();
@@ -220,30 +226,33 @@ public class TutorServiceImplement implements TutorService {
             List<FeedBackDTO> listFeedbackDTO = new ArrayList<>();
 
             for (TutorSubject tutorSubject : listTutorSubject) {
-                SubjectDTO subjectDTO = new SubjectDTO();
-                subjectDTO.setId(tutorSubject.getSubject().getId());
-                subjectDTO.setSubjectName(tutorSubject.getSubject().getSubjectName());
-                subjectDTO.setDescription(tutorSubject.getSubject().getDescription());
-                subjectDTO.setTotalMoneyMonthTeaching(tutorSubject.getSubject().getTotalMoneyMonthTeaching());
-                subjectDTO.setNumberTeachOfWeek(tutorSubject.getSubject().getNumberTeachOfWeek());
-                subjectDTO.setOneHourTeaching(tutorSubject.getSubject().getOneHourTeaching());
+                SubjectDTO subjectDTO = SubjectDTO.builder()
+                        .id(tutorSubject.getSubject().getId())
+                        .subjectName(tutorSubject.getSubject().getSubjectName())
+                        .description(tutorSubject.getSubject().getDescription())
+                        .totalMoneyMonthTeaching(tutorSubject.getSubject().getTotalMoneyMonthTeaching())
+                        .numberTeachOfWeek(tutorSubject.getSubject().getNumberTeachOfWeek())
+                        .oneHourTeaching(tutorSubject.getSubject().getOneHourTeaching())
+                        .build();
 
                 listSubjectDTOs.add(subjectDTO);
             }
             for (Teaching teaching : listTeachings) {
-                TeachingDTO teachingDTO = new TeachingDTO();
-                teachingDTO.setTeachingId(teaching.getId());
-                teachingDTO.setTeachingName(teaching.getTeachingName());
-                teachingDTO.setSchedule(teaching.getSchedule());
+                TeachingDTO teachingDTO = TeachingDTO.builder()
+                        .teachingId(teaching.getId())
+                        .teachingName(teaching.getTeachingName())
+                        .schedule(teaching.getSchedule())
+                        .build();
                 listTeachingDTO.add(teachingDTO);
             }
 
-            for (FeedBack feedBack : listFeedback) {
-                FeedBackDTO feedBackDTO = new FeedBackDTO();
-                feedBackDTO.setFeedbackId(feedBack.getId());
-                feedBackDTO.setContent(feedBack.getContent());
-                feedBackDTO.setRating(feedBack.getRating());
-                feedBackDTO.setCreateAt(feedBack.getCreateAt());
+            for (FeedBack feedback : listFeedback) {
+                FeedBackDTO feedBackDTO = FeedBackDTO.builder()
+                        .feedbackId(feedback.getId())
+                        .content(feedback.getContent())
+                        .rating(feedback.getRating())
+                        .createAt(feedback.getCreateAt())
+                        .build();
 
                 listFeedbackDTO.add(feedBackDTO);
             }
@@ -425,8 +434,7 @@ public class TutorServiceImplement implements TutorService {
                 }
             }
         } catch (Exception e) {
-            // In lỗi hoặc log lỗi để kiểm tra
-            e.printStackTrace();
+
             throw new RuntimeException("Update tutor fail: " + e.getMessage());
         }
         return false;
@@ -434,46 +442,68 @@ public class TutorServiceImplement implements TutorService {
 
     @Override
     public TutorManyDTO getTutorById(int tutorId) {
-        Optional<Tutor> checkTutorExistOrNot = tutorRepository.findById(tutorId);
-        if (checkTutorExistOrNot.isPresent()) {
-            Tutor tutor = checkTutorExistOrNot.get();
+        Tutor tutor = tutorRepository.findById(tutorId).orElseThrow(() -> new RuntimeException("Tutor not found"));
+        if (tutor != null) {
             List<TutorSubject> listTutorSubject = tutorSubjecRepository.findByTutorId(tutorId);
-
-            TutorManyDTO tutorManyDTO = new TutorManyDTO();
-            tutorManyDTO.setId(tutor.getId());
-            tutorManyDTO.setCityTech(tutor.getCityTeach());
-            tutorManyDTO.setFullName(tutor.getFullName());
-            tutorManyDTO.setGender(tutor.getGender());
-            tutorManyDTO.setDateOfBirth(tutor.getDateOfBirth());
-            tutorManyDTO.setAddress(tutor.getAddress());
-            tutorManyDTO.setPhoneNumber(tutor.getPhoneNumber());
-            tutorManyDTO.setEmail(tutor.getEmail());
-            tutorManyDTO.setVoice(tutor.getVoice());
-            tutorManyDTO.setMajor(tutor.getMajor());
-            tutorManyDTO.setEcademicLevel(tutor.getEcademicLevel());
-            tutorManyDTO.setDescription(tutor.getDescription());
-            tutorManyDTO.setCitizenIdentificationCard(tutor.getCitizenIdentificationCard());
-            tutorManyDTO.setIssued(tutor.getIssued());
-            tutorManyDTO.setCitizenIdentificationCardFront(tutor.getCitizenIdentificationCardFront());
-            tutorManyDTO.setCitizenIdentificationCardFrontBackside(tutor.getCitizenIdentificationCardFrontBackside());
-            tutorManyDTO.setCardPhoto(tutor.getCardPhoto());
-            tutorManyDTO.setSchoolTeachOrStudent(tutor.getSchoolTeachOrStudent());
-            tutorManyDTO.setNumberTeachOfWeak(tutor.getNumberTeachOfWeek());
-            tutorManyDTO.setSalaryRequest(tutor.getSalaryRequest());
-            tutorManyDTO.setCreateAt(tutor.getCreateAt());
+            TutorManyDTO tutorManyDTO = TutorManyDTO.builder()
+                    .id(tutor.getId())
+                    .cityTech(tutor.getCityTeach())
+                    .fullName(tutor.getFullName())
+                    .gender(tutor.getGender())
+                    .dateOfBirth(tutor.getDateOfBirth())
+                    .address(tutor.getAddress())
+                    .phoneNumber(tutor.getPhoneNumber())
+                    .email(tutor.getEmail())
+                    .voice(tutor.getVoice())
+                    .major(tutor.getMajor())
+                    .ecademicLevel(tutor.getEcademicLevel())
+                    .description(tutor.getDescription())
+                    .citizenIdentificationCard(tutor.getCitizenIdentificationCard())
+                    .issued(tutor.getIssued())
+                    .citizenIdentificationCardFront(tutor.getCitizenIdentificationCardFront())
+                    .citizenIdentificationCardFrontBackside(tutor.getCitizenIdentificationCardFrontBackside())
+                    .cardPhoto(tutor.getCardPhoto())
+                    .schoolTeachOrStudent(tutor.getSchoolTeachOrStudent())
+                    .numberTeachOfWeak(tutor.getNumberTeachOfWeek())
+                    .salaryRequest(tutor.getSalaryRequest())
+                    .createAt(tutor.getCreateAt())
+                    .approved(tutor.isApproved())
+                    .build();
 
             List<SubjectDTO> listSubjectDT0 = listTutorSubject.stream().map(
                     TubjectDTO -> {
-                        SubjectDTO subjectDTO = new SubjectDTO();
-                        subjectDTO.setId(TubjectDTO.getId());
-                        subjectDTO.setSubjectName(TubjectDTO.getSubject().getSubjectName());
-                        subjectDTO.setDescription(TubjectDTO.getSubject().getDescription());
-                        subjectDTO.setTotalMoneyMonthTeaching(TubjectDTO.getSubject().getTotalMoneyMonthTeaching());
-                        subjectDTO.setNumberTeachOfWeek(TubjectDTO.getSubject().getNumberTeachOfWeek());
-                        subjectDTO.setOneHourTeaching(TubjectDTO.getSubject().getOneHourTeaching());
-                        return subjectDTO;
+                        return SubjectDTO.builder()
+                                .id(TubjectDTO.getId())
+                                .subjectName(TubjectDTO.getSubject().getSubjectName())
+                                .description(TubjectDTO.getSubject().getDescription())
+                                .totalMoneyMonthTeaching(TubjectDTO.getSubject().getTotalMoneyMonthTeaching())
+                                .numberTeachOfWeek(TubjectDTO.getSubject().getNumberTeachOfWeek())
+                                .oneHourTeaching(TubjectDTO.getSubject().getOneHourTeaching())
+                                .build();
                     }).collect(Collectors.toList());
+
+            List<TeachingDTO> listTeachingDTO = tutor.getListTeachings().stream().map(
+                    teaching -> {
+                        return TeachingDTO.builder()
+                                .teachingId(teaching.getId())
+                                .teachingName(teaching.getTeachingName())
+                                .schedule(teaching.getSchedule())
+                                .build();
+                    }).collect(Collectors.toList());
+
+            List<FeedBackDTO> listFeedbackDTO = tutor.getListFeedbacks().stream().map(
+                    feedback -> {
+                        return FeedBackDTO.builder()
+                                        .feedbackId(feedback.getId())
+                                        .content(feedback.getContent())
+                                        .rating(feedback.getRating())
+                                        .createAt(feedback.getCreateAt())
+                                        .build();
+                    }).collect(Collectors.toList());
+
             tutorManyDTO.setListSubjectDTO(listSubjectDT0);
+            tutorManyDTO.setListTeachingDTO(listTeachingDTO);
+            tutorManyDTO.setListFeedbackDTO(listFeedbackDTO);
             return tutorManyDTO;
         }
         return null;

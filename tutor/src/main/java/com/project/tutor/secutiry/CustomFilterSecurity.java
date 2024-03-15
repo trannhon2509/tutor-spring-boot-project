@@ -65,7 +65,7 @@ public class CustomFilterSecurity {
                                         //SUBJECT
                                         "/api/subject/list","/api/subject/search-and-sort",
                                         // TEACHING
-                                        "/api/teaching/list").permitAll()
+                                        "/api/teaching/list" , "/api/teaching/*").permitAll()
                                 .requestMatchers("/api/booking/add", "/api/feedback/**").hasAuthority("ROLE_USER")
                                 .requestMatchers(
                                         // USER AND ROLE
@@ -75,14 +75,20 @@ public class CustomFilterSecurity {
                                         // TUTOR
                                         "/api/tutor/delete/*", "/api/tutor/update/*", "/api/tutor/*","/api/tutor/list/approved",
                                         // TEACHING
-                                        "/api/teaching/add", "/api/teaching/delete/*", "/api/teaching/update/*", "/api/teaching/*",
+                                        "/api/teaching/add", "/api/teaching/delete/*", "/api/teaching/update/*",
                                         // PAYMENT
                                         "/api/payment/list", "/api/payment/add", "/api/payment/delete/*", "/api/payment/update/*",
                                         //BOOKING
-                                        "/api/booking/list", "/api/booking/delete/*","/api/booking/update/*"
+                                        "/api/booking/list", "/api/booking/delete/*"
                                 ).hasAuthority("ROLE_ADMIN")
 
-                                .requestMatchers("/api/subject/list", "/api/tutor/list","/api/booking/*"
+                                .requestMatchers(
+                                                // SUBJECT
+                                                "/api/subject/list",
+                                                // TUTOR
+                                                "/api/tutor/list",
+                                                // BOOKING
+                                                "/api/booking/*","/api/booking/update/*"
                                 ).hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                                 .anyRequest().authenticated()).
                 csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(new CorsConfigurationSource() {
