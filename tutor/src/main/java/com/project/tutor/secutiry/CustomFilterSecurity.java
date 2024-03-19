@@ -14,6 +14,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -83,32 +84,19 @@ public class CustomFilterSecurity {
                                 ).hasAuthority("ROLE_ADMIN")
 
                                 .requestMatchers(
-                                                // SUBJECT
-                                                "/api/subject/list",
-                                                // TUTOR
-                                                "/api/tutor/list",
-                                                // BOOKING
-                                                "/api/booking/*","/api/booking/update/*"
+                                        // SUBJECT
+                                        "/api/subject/list",
+                                        // TUTOR
+                                        "/api/tutor/list",
+                                        // BOOKING
+                                        "/api/booking/*","/api/booking/update/*"
                                 ).hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
-                                .anyRequest().authenticated()).
-                csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(new CorsConfigurationSource() {
-                    @Override
-                    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-                        CorsConfiguration cfg = new CorsConfiguration();
-                        cfg.setAllowedOrigins(Arrays.asList(
-                                "http://localhost:3000", "http://localhost:8080"
-                        ));
-                        cfg.setAllowedMethods(Collections.singletonList("*"));
-                        cfg.setAllowCredentials(true);
-                        cfg.setAllowedHeaders(Collections.singletonList("*"));
-                        cfg.setExposedHeaders(Arrays.asList("Authorization"));
-                        cfg.setMaxAge(3600L);
-                        return cfg;
-                    }
-                })).httpBasic(Customizer.withDefaults()).formLogin(Customizer.withDefaults());
+                                .anyRequest().authenticated());
+        http.csrf(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
+
 
 
     @Bean

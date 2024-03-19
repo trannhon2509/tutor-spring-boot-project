@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TeachingRepository extends JpaRepository<Teaching , Integer> {
-    public Teaching findTeachingByTeachingName(String teachingName);
+    public boolean existsByTeachingName(String teachingName);
 }

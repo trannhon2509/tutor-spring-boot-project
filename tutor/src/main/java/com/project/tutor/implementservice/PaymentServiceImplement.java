@@ -6,6 +6,9 @@ import com.project.tutor.model.Tutor;
 import com.project.tutor.repository.PaymentRepostiory;
 import com.project.tutor.request.PaymentRequest;
 import com.project.tutor.service.PaymentService;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.parameters.P;
@@ -17,9 +20,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class PaymentServiceImplement implements PaymentService {
 
-    @Autowired
+
     PaymentRepostiory paymentRepostiory;
     @Override
     public boolean addPayment(PaymentRequest request) {

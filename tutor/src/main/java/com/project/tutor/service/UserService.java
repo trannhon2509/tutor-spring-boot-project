@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public interface UserService {
     public boolean signup (UserRequest request);
-    public boolean signin (String username , String password);
+    public boolean signin (UserRequest request);
     public UserManyDTO findUserById (int userId);
     public User findUserProfileByJwt (String jwt);
     public List<UserManyDTO> getAllUser (int page , int record);

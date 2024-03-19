@@ -11,6 +11,9 @@ import com.project.tutor.repository.UserRepository;
 import com.project.tutor.repository.UserRoleRepository;
 import com.project.tutor.request.RoleRequest;
 import com.project.tutor.service.RoleService;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,16 +24,18 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class RoleImplementService implements RoleService {
-    @Autowired
+
     RoleRepository roleRepository;
 
-    @Autowired
+
     UserRepository userRepository;
-    @Autowired
+
     UserRoleRepository userRoleRepository;
 
-    @Autowired
+
     PagingSearchAndSorting pagingSearchAndSorting;
 
     @Override

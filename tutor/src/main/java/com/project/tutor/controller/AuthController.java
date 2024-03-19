@@ -1,5 +1,6 @@
 package com.project.tutor.controller;
 
+import com.project.tutor.model.User;
 import com.project.tutor.request.UserRequest;
 import com.project.tutor.respone.ResponeDataAuth;
 import com.project.tutor.respone.ResponseData;
@@ -34,9 +35,10 @@ public class AuthController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<?> signup(@RequestParam String username , @RequestParam  String password) {
-        String token = jwtProvider.generateToken(username);
-        boolean checkLogin = userService.signin(username,password);
+    public ResponseEntity<?> signup(@RequestBody UserRequest request) {
+
+        boolean checkLogin = userService.signin(request);
+        String token = jwtProvider.generateToken(request.getUsername());
         data.setData(checkLogin ? token : null);
         data.setMsg(checkLogin ? "Sign in success" : "Sign in fail!");
         return new ResponseEntity<>(data, HttpStatus.OK);

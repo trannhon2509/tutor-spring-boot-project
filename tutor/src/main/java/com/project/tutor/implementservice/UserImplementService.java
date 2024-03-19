@@ -5,6 +5,7 @@ import com.project.tutor.dto.FeedBackDTO;
 import com.project.tutor.dto.RoleDTO;
 import com.project.tutor.many.dto.UserManyDTO;
 import com.project.tutor.mapper.UserRole;
+import com.project.tutor.mapstruct.MapStructGlobal;
 import com.project.tutor.model.FeedBack;
 import com.project.tutor.model.Role;
 import com.project.tutor.model.User;
@@ -19,6 +20,9 @@ import com.project.tutor.secutiry.CustomUserDetails;
 import com.project.tutor.secutiry.JwtProvider;
 import com.project.tutor.service.EmailService;
 import com.project.tutor.service.UserService;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -37,37 +41,21 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE , makeFinal = true)
 public class UserImplementService implements UserService {
 
-    @Autowired
     UserRepository userRepository;
-
-    @Autowired
     RoleRepository roleRepository;
-
-    @Autowired
     PasswordEncoder passwordEncoder;
-
-    @Autowired
     JwtProvider jwtProvider;
-
-    @Autowired
     UserRoleRepository userRoleRepository;
-
-    @Autowired
     EmailService emailService;
-
-    @Autowired
     CustomUserDetails customUserDetails;
-
-    @Autowired
     FeedBackRepository feedBackRepository;
-
-    @Autowired
     PagingSearchAndSorting pagingSearchAndSorting;
-
-    @Autowired
     AuthenticationManager authenticationManager;
+
 
     @Override
     @Transactional
@@ -179,29 +167,26 @@ public class UserImplementService implements UserService {
     public Authentication authentication(String username, String password) {
         UserDetails userDetails = customUserDetails.loadUserByUsername(username);
         if (userDetails == null) {
-            throw new BadCredentialsException("Invalid username");
+            throw new RuntimeException("Invalid username");
         }
         if (!passwordEncoder.matches(password, userDetails.getPassword())) {
-            throw new BadCredentialsException("Invalid password");
+            throw new RuntimeException("Invalid password");
         }
 
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
     @Override
-    public boolean signin(String username, String password) {
-        User user = userRepository.findByUsername(username);
-        if (user == null) {
-            return false;
-        }
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            return false;
-        }
-        Authentication authentication = new UsernamePasswordAuthenticationToken(username, password);
-        Authentication authenticatedUser = authenticationManager.authenticate(authentication);
-        SecurityContextHolder.getContext().setAuthentication(authenticatedUser);
+    public boolean signin(UserRequest request) {
 
-        return true;
+            String username = request.getUsername();
+            String password = request.getPassword();
+
+            Authentication authentication = authentication(username , password);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            return true;
+
     }
 
 

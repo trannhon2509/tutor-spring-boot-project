@@ -1,11 +1,15 @@
 package com.project.tutor.implementservice;
 
 import com.project.tutor.dto.TeachingDTO;
+import com.project.tutor.mapstruct.MapStructGlobal;
 import com.project.tutor.model.Teaching;
 import com.project.tutor.model.Tutor;
 import com.project.tutor.repository.TeachingRepository;
 import com.project.tutor.request.TeachingRequest;
 import com.project.tutor.service.TeachingService;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,22 +18,22 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class TeachingImplementService implements TeachingService {
 
-    @Autowired
     TeachingRepository teachingRepository;
+
+
+    MapStructGlobal mapStructGlobal;
 
     @Override
     public List<TeachingDTO> getAllListTeaching() {
         List<Teaching> listTeaching = teachingRepository.findAll();
         List<TeachingDTO> listTeachingDTO = new ArrayList<>();
-
         for (Teaching teaching : listTeaching) {
-            TeachingDTO teachingDTO = TeachingDTO.builder()
-                    .teachingId(teaching.getId())
-                    .teachingName(teaching.getTeachingName())
-                    .schedule(teaching.getSchedule())
-                    .build();
+
+            TeachingDTO teachingDTO = mapStructGlobal.toTeaching(teaching);
 
             listTeachingDTO.add(teachingDTO);
         }
@@ -39,24 +43,11 @@ public class TeachingImplementService implements TeachingService {
     @Override
     public boolean addTeaching(TeachingRequest request) {
         try {
-            Tutor tutor = new Tutor();
 
-            String teachingName = request.getTeachingName();
-            int schedule = request.getSchedule();
+           if(teachingRepository.existsByTeachingName(request.getTeachingName()))
+               throw  new RuntimeException("Teaching already exist!");
 
-            tutor.setId(request.getTutorId());
-
-            Teaching checkTeachingNameExist = teachingRepository.findTeachingByTeachingName(teachingName);
-
-            if (checkTeachingNameExist != null) {
-                throw new RuntimeException("Teaching name already exist!");
-            }
-
-            Teaching newTeaching = new Teaching();
-
-            newTeaching.setTeachingName(teachingName);
-            newTeaching.setSchedule(schedule);
-            newTeaching.setTutor(tutor);
+            Teaching newTeaching = mapStructGlobal.toTeachingRequest(request);
 
             teachingRepository.save(newTeaching);
             return true;

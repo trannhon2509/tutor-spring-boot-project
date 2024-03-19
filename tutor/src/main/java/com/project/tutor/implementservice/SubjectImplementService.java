@@ -12,6 +12,9 @@ import com.project.tutor.repository.TutorRepository;
 import com.project.tutor.repository.TutorSubjecRepository;
 import com.project.tutor.request.SubjectRequest;
 import com.project.tutor.service.SubjectService;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -23,16 +26,18 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class SubjectImplementService implements SubjectService {
-    @Autowired
+
     SubjectRepository subjectRepository;
-    @Autowired
+
     TutorSubjecRepository tutorSubjecRepository;
 
-    @Autowired
+
     TutorRepository tutorRepository;
 
-    @Autowired
+
     PagingSearchAndSorting pagingSearchAndSorting;
 
 

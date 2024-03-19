@@ -12,6 +12,9 @@ import com.project.tutor.repository.UserRepository;
 import com.project.tutor.request.BookingRequest;
 import com.project.tutor.secutiry.CustomUserDetails;
 import com.project.tutor.service.BookingService;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,19 +24,20 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class BookingImlementService implements BookingService {
 
-    @Autowired
+
     TutorRepository tutorRepository;
 
-    @Autowired
+
     BookingRepository bookingRepository;
 
-    @Autowired
+
     UserRepository userRepository;
 
 
-    @Autowired
     CustomUserDetails customUserDetails;
 
     @Override

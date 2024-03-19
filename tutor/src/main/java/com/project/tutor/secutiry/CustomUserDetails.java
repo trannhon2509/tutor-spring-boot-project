@@ -29,12 +29,12 @@ public class CustomUserDetails implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserRole user = userRoleRepository.findByUserUsername(username);
         if (user == null) {
-            throw new BadCredentialsException("Cannot found username : " + username);
+            throw new RuntimeException("Cannot found username : " + username);
         }
 
         // CHECK ACCOUNT ACTIVATED OR NOT
         if (!user.getUser().isActive()) {
-            throw new BadCredentialsException("Account don't acive");
+            throw new RuntimeException("Account don't acive");
         }
 
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();

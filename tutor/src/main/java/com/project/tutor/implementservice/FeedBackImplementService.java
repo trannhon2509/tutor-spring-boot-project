@@ -11,6 +11,9 @@ import com.project.tutor.repository.UserRepository;
 import com.project.tutor.request.FeedBackRequest;
 import com.project.tutor.secutiry.CustomUserDetails;
 import com.project.tutor.service.FeedbackService;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,18 +26,20 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class FeedBackImplementService implements FeedbackService {
 
-    @Autowired
+
     FeedBackRepository feedBackRepository;
 
-    @Autowired
+
     CustomUserDetails customUserDetails;
 
-    @Autowired
+
     UserRepository userRepository;
 
-    @Autowired
+
     TutorRepository tutorRepository;
 
     @Override

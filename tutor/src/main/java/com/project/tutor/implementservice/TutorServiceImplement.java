@@ -18,6 +18,9 @@ import com.project.tutor.repository.UserRepository;
 import com.project.tutor.request.TutorRequest;
 import com.project.tutor.service.FileService;
 import com.project.tutor.service.TutorService;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
@@ -31,22 +34,17 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class TutorServiceImplement implements TutorService {
-    @Autowired
+     
     TutorRepository tutorRepository;
-
-    @Autowired
     PagingSearchAndSorting pagingSearchAndSorting;
 
-    @Autowired
     SubjectRepository subjectRepository;
-    @Autowired
     TutorSubjecRepository tutorSubjecRepository;
-
-    @Autowired
     FileService fileService;
 
-    @Autowired
     UserRepository userRepository;
 
     @Override
