@@ -1,12 +1,15 @@
 package com.project.tutor.secutiry;
 
 
+import com.project.tutor.endpoint.EndPoints;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Role;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -19,11 +22,15 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import javax.crypto.spec.SecretKeySpec;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -42,6 +49,7 @@ public class CustomFilterSecurity {
     @Autowired
     CustomUserDetails customUserDetails;
 
+
     @Bean
     public AuthenticationProvider authenticationProvider() {
 
@@ -58,46 +66,16 @@ public class CustomFilterSecurity {
                 .addFilterBefore(jwtValidator, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(
                         authorize -> authorize
-                                .requestMatchers(
-                                        // AUTH
-                                        "/auth/**",
-                                        // TUTOR
-                                        "/api/tutor/add","/api/tutor/list","/api/tutor/search-and-sort",
-                                        //SUBJECT
-                                        "/api/subject/list","/api/subject/search-and-sort",
-                                        // TEACHING
-                                        "/api/teaching/list" , "/api/teaching/*").permitAll()
-                                .requestMatchers("/api/booking/add", "/api/feedback/**").hasAuthority("ROLE_USER")
-                                .requestMatchers(
-                                        // USER AND ROLE
-                                        "/api/user/**", "/api/role/**",
-                                        // SUBJECT
-                                        "/api/subject/add", "/api/subject/delete/*", "/api/subject/update/*",
-                                        // TUTOR
-                                        "/api/tutor/delete/*", "/api/tutor/update/*", "/api/tutor/*","/api/tutor/list/approved",
-                                        // TEACHING
-                                        "/api/teaching/add", "/api/teaching/delete/*", "/api/teaching/update/*",
-                                        // PAYMENT
-                                        "/api/payment/list", "/api/payment/add", "/api/payment/delete/*", "/api/payment/update/*",
-                                        //BOOKING
-                                        "/api/booking/list", "/api/booking/delete/*"
-                                ).hasAuthority("ROLE_ADMIN")
-
-                                .requestMatchers(
-                                        // SUBJECT
-                                        "/api/subject/list",
-                                        // TUTOR
-                                        "/api/tutor/list",
-                                        // BOOKING
-                                        "/api/booking/*","/api/booking/update/*"
-                                ).hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                                .requestMatchers(EndPoints.PUBLIC_ENDPOINTS).permitAll()
+                                .requestMatchers(EndPoints.USER_ENDPOINTS).hasAuthority("ROLE_USER")
+                                .requestMatchers(EndPoints.ADMIN_ENDPOINTS).hasAuthority("ROLE_ADMIN")
+                                .requestMatchers(EndPoints.USER_ADMIN_ENPOINTS).hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                                 .anyRequest().authenticated());
+
         http.csrf(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
-
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {

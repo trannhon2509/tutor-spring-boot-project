@@ -23,7 +23,9 @@ import com.project.tutor.service.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.quartz.QuartzTransactionManager;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -43,6 +45,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE , makeFinal = true)
+@Transactional
+@Slf4j
 public class UserImplementService implements UserService {
 
     UserRepository userRepository;
@@ -304,8 +308,23 @@ public class UserImplementService implements UserService {
         return null;
     }
 
+    public void getAuthentication (){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        User currentUser = userRepository.findByUsername(username);
+
+        if (currentUser == null) {
+            throw new RuntimeException("User not found");
+        }
+
+        log.info("Username : {}" , authentication.getName());
+        authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
+    }
     @Override
     public List<UserManyDTO> getAllUser(int page, int record) {
+        getAuthentication();
+
         List<User> listUser = userRepository.findAll(pagingSearchAndSorting.pageablePageSizeAndRecordOrSearchOrSort(page, record)).get().toList();
         List<UserManyDTO> userDTOList = new ArrayList<>();
 
@@ -386,11 +405,78 @@ public class UserImplementService implements UserService {
         Optional<User> checkUserExistOrNot = userRepository.findById(userId);
         if (checkUserExistOrNot.isPresent()) {
             User user = checkUserExistOrNot.get();
-            userRepository.delete(user);
+            userRoleRepository.deleteByUser(user);
             return true;
         }
         return false;
     }
+
+    @Override
+    public String getUserRole(String username) {
+        User user = userRepository.findByUsername(username);
+
+        if (user == null) {
+            throw  new RuntimeException("User not found!");
+        }
+
+
+        List<String> roles = user.getListUserRoles().stream()
+                .map(userRole -> userRole.getRole().getRoleName())
+                .collect(Collectors.toList());
+
+        if (!roles.isEmpty()) {
+            return roles.get(0);
+        } else {
+
+            throw  new RuntimeException("User don't have role!");
+        }
+    }
+
+    @Override
+    public boolean updateProfile(UserRequest request) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        User currentUser = userRepository.findByUsername(username);
+
+        if (currentUser == null) {
+            throw new RuntimeException("User not found");
+        }
+
+        log.info("Username : {}" , authentication.getName());
+        authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
+
+        String email = request.getEmail();
+        String password = request.getPassword();
+        String newPassword = request.getPasswordRepeat();
+        String newPasswordRepeat = request.getPasswordRepeatNew();
+        String firstName = request.getFirstName();
+        String lastName = request.getLastName();
+        String address = request.getAddress();
+        String phoneNumber = request.getPhoneNumber();
+
+        if(password.equals(newPassword)){
+            throw  new RuntimeException("The new password must be different from the old password");
+        }
+        if(!newPassword.equals(newPasswordRepeat)){
+            throw  new RuntimeException("The new password must matching  the new password repeat!");
+        }
+
+
+        currentUser.setEmail(email);
+        currentUser.setPassword(passwordEncoder.encode(newPasswordRepeat));
+        currentUser.setFirstName(firstName);
+        currentUser.setLastName(lastName);
+        currentUser.setAddress(address);
+        currentUser.setPhoneNumber(phoneNumber);
+
+        userRepository.save(currentUser);
+
+        return true;
+
+    }
+
 
     @Override
     public List<UserManyDTO> getAlllistUserAndSearching(String title, int page, int record) {

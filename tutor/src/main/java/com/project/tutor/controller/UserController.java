@@ -50,15 +50,13 @@ public class UserController {
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
 
-    @GetMapping("/profile")
-    public ResponseEntity<?> getProfileUser(@RequestHeader("Authorization") String jwt) {
-        User user = userService.findUserProfileByJwt(jwt);
-        if (user != null) {
-            data.setData(true);
-            data.setMsg("Success");
-        } else {
-            data.setMsg("Fail!");
-        }
+    @PutMapping("/profile")
+    public ResponseEntity<?> updateProfile ( @RequestBody UserRequest request){
+        boolean checkUpdateProfile  = userService.updateProfile(request);
+        data.setData(checkUpdateProfile ? true : false);
+        data.setMsg(checkUpdateProfile ? "Update profile success" : "Update profile fail!");
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
+
+
 }

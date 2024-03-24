@@ -25,5 +25,8 @@ public interface UserService {
     public boolean forgotPassword (String email);
     public boolean resetPassword (String email , UserRequest request);
 
+    public String getUserRole (String username);
+
+    public boolean updateProfile (UserRequest request);
 
 }

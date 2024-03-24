@@ -20,7 +20,7 @@ public class FeedbackController {
     @Autowired
     FeedbackService feedbackService;
 
-    @GetMapping
+    @GetMapping("/list")
     public ResponseEntity<?> getAllFeedback (){
         return new ResponseEntity<>(feedbackService.getAllFeedback(), HttpStatus.OK);
     }

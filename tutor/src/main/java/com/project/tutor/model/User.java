@@ -58,14 +58,14 @@ public class User {
     @UpdateTimestamp
     private LocalDateTime creatAt;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", fetch =  FetchType.EAGER)
     private List<UserRole> listUserRoles = new ArrayList<>();
 
 
-    @OneToMany(mappedBy = "user" , fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user" , fetch = FetchType.LAZY , cascade = CascadeType.ALL)
     private List<FeedBack> listFeedbacks = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user" , fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user" , fetch = FetchType.LAZY , cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Booking> listBooking = new ArrayList<>();
 }

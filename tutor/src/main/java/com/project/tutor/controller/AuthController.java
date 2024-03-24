@@ -7,14 +7,21 @@ import com.project.tutor.respone.ResponseData;
 import com.project.tutor.secutiry.JwtProvider;
 import com.project.tutor.service.TutorService;
 import com.project.tutor.service.UserService;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Encoders;
+import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Array;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.crypto.SecretKey;
+
 @RestController
 @RequestMapping("/auth")
+@Slf4j
 public class AuthController {
     public static ResponseData data = new ResponseData();
     @Autowired
@@ -26,6 +33,8 @@ public class AuthController {
     @Autowired
     JwtProvider jwtProvider;
 
+
+
     @PostMapping("/signup")
     public ResponseEntity<?> singup(@RequestBody UserRequest request) {
         boolean checkSignup = userService.signup(request);
@@ -35,10 +44,16 @@ public class AuthController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<?> signup(@RequestBody UserRequest request) {
+    public ResponseEntity<?> signin(@RequestBody UserRequest request) {
+//        SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+//        String displayKey = Encoders.BASE64.encode(secretKey.getEncoded());
+//
+//        System.out.println(displayKey);
 
         boolean checkLogin = userService.signin(request);
-        String token = jwtProvider.generateToken(request.getUsername());
+
+        String token = jwtProvider.generateToken(request.getUsername() , userService.getUserRole(request.getUsername()));
+
         data.setData(checkLogin ? token : null);
         data.setMsg(checkLogin ? "Sign in success" : "Sign in fail!");
         return new ResponseEntity<>(data, HttpStatus.OK);
