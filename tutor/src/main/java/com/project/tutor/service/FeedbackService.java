@@ -18,5 +18,7 @@ public interface FeedbackService {
 
     public boolean checkIfUserHasBooking (User user , Tutor tutor);
 
+    public boolean updateFeedback (User userFeedback , Tutor tutorFeedback , FeedBackRequest request);
+
 
 }

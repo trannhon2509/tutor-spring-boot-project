@@ -63,19 +63,20 @@ public class CustomFilterSecurity {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtValidator, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(
                         authorize -> authorize
                                 .requestMatchers(EndPoints.PUBLIC_ENDPOINTS).permitAll()
                                 .requestMatchers(EndPoints.USER_ENDPOINTS).hasAuthority("ROLE_USER")
                                 .requestMatchers(EndPoints.ADMIN_ENDPOINTS).hasAuthority("ROLE_ADMIN")
                                 .requestMatchers(EndPoints.USER_ADMIN_ENPOINTS).hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
-                                .anyRequest().authenticated());
+                                .anyRequest().authenticated())
+                .addFilterBefore(jwtValidator, UsernamePasswordAuthenticationFilter.class);
 
         http.csrf(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

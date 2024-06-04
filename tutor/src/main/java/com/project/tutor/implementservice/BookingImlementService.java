@@ -245,13 +245,13 @@ public class BookingImlementService implements BookingService {
             UserDetails userDetails = customUserDetails.loadUserByUsername(username);
 
             if (userDetails == null) {
-                throw new BadCredentialsException("User not found");
+                throw new RuntimeException("User not found : " + username);
             }
 
             bookingRepository.delete(checkBookingExistOrNot);
             return true;
         } catch (Exception e) {
-            throw new BadCredentialsException("Delete booking fail!");
+            throw new RuntimeException("Delete booking fail!");
         }
     }
 }

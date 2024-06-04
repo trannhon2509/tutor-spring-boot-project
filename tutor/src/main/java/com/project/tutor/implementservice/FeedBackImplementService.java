@@ -124,6 +124,21 @@ public class FeedBackImplementService implements FeedbackService {
     }
 
     @Override
+    public boolean updateFeedback(User userFeedback, Tutor tutorFeedback, FeedBackRequest request) {
+        try {
+            String content = request.getContent();
+            double rating = request.getRating();
+            LocalDateTime createAt=  request.getCreateAt();
+
+            User user = new User();
+            user.setId(request.getUserId());
+        }catch (Exception e){
+            throw new RuntimeException("Update feedback fail!");
+        }
+        return false;
+    }
+
+    @Override
     public boolean deleteFeedback(int feedbackId) {
         try {
            // FIND ID NEED DELETE
