@@ -18,6 +18,7 @@ import java.util.Map;
 
 @RequestMapping("/api/booking")
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 public class BookingController {
     public static ResponseData data = new ResponseData();
 

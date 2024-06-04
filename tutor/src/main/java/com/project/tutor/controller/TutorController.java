@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/tutor")
+@CrossOrigin(origins = "http://localhost:3000")
 public class TutorController {
     public static ResponseData data = new ResponseData();
     @Autowired

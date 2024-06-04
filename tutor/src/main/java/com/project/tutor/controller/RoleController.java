@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/role")
+@CrossOrigin(origins = "http://localhost:3000")
 public class RoleController {
     public static ResponseData data = new ResponseData();
 

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/api/teaching")
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 public class TeachingController {
     public static ResponseData data = new ResponseData();
 

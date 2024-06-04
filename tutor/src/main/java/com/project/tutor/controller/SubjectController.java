@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/subject")
+@CrossOrigin(origins = "http://localhost:3000")
 public class SubjectController {
     public static ResponseData data = new ResponseData();
     @Autowired

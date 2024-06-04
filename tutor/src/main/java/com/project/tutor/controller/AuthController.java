@@ -22,6 +22,7 @@ import javax.crypto.SecretKey;
 @RestController
 @RequestMapping("/auth")
 @Slf4j
+@CrossOrigin(origins = "http://localhost:3000")
 public class AuthController {
     public static ResponseData data = new ResponseData();
     @Autowired
@@ -32,7 +33,6 @@ public class AuthController {
 
     @Autowired
     JwtProvider jwtProvider;
-
 
 
     @PostMapping("/signup")
@@ -52,7 +52,7 @@ public class AuthController {
 
         boolean checkLogin = userService.signin(request);
 
-        String token = jwtProvider.generateToken(request.getUsername() , userService.getUserRole(request.getUsername()));
+        String token = jwtProvider.generateToken(request.getUsername(), userService.getUserRole(request.getUsername()));
 
         data.setData(checkLogin ? token : null);
         data.setMsg(checkLogin ? "Sign in success" : "Sign in fail!");
